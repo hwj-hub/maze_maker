@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6d28d9">
+<title>미로찾기 만들기 · 미로찾기 도안 자동 생성 — 나이별 난이도, 글자·하트·동물 모양 미로, 정답지까지 A4 PDF (무료·설치 없이)</title>
+<meta name="description" content="누를 때마다 새 미로를 만들어 A4 문제지와 정답지로 뽑아 줍니다. 3~4세 아주 쉬운 미로부터 어른용 아주 어려운 미로까지 6단계, 네모·동그라미·벌집 미로, 하트·별·고양이 같은 그림 모양 미로와 이름 글자 모양 미로, 내 그림 실루엣 미로까지. 토끼→당근 같은 출발·도착 그림, 흑백 색칠용, 한 장에 2·4개, 20개를 한 번에 PDF로, 화면에서 손가락으로 풀기. 설치·회원가입 없이 무료이며 그림은 서버로 보내지 않습니다.">
+<meta property="og:title" content="미로찾기 만들기 · 나이별 미로찾기 도안을 누를 때마다 새로">
+<meta property="og:description" content="아주 쉬운 유아 미로부터 어른용까지 6단계, 네모·동그라미·벌집·하트·이름 글자 모양 미로를 정답지와 함께 A4 PDF로. 화면에서 손가락으로 풀기까지. 설치·업로드 없이 무료.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hwj-hub.github.io/maze_maker/">
+<!-- 링크 미리보기 그림: 스크래퍼는 절대 주소만 읽으므로 배포 주소로 적는다. 그림은 make_thumbnail.py 의 og 가 만든 og-image.png(1200×630) -->
+<meta property="og:image" content="https://hwj-hub.github.io/maze_maker/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="미로찾기 만들기 — 토끼가 당근을 찾아가는 네모 미로와 하트 모양 미로, 빨간 정답 길이 그려진 정답지">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%236d28d9'/%3E%3Cpath d='M22 22h56v56H22zM22 40h20M58 22v20M40 58h20v20M40 40v18' fill='none' stroke='%23fff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  color-scheme:light dark;
+  --bg:#f6f3ff; --card:#fff; --card2:#f1ecfe; --fg:#1e1533; --muted:#655a7d; --line:#e2d9f7;
+  --accent:#6d28d9; --accent2:#8b5cf6; --afg:#fff;
+  --ok:#047857; --okbg:#e6f6f0; --warn:#b45309; --warnbg:#fef4e6; --danger:#dc2626; --dangerbg:#fdecec;
+  --shadow:0 1px 2px rgba(30,21,51,.05),0 8px 24px -14px rgba(30,21,51,.30);
+  --r:16px;
+}
+@media (prefers-color-scheme:dark){
+ :root{
+  --bg:#0f0a1c; --card:#1a1330; --card2:#140f26; --fg:#efeaff; --muted:#b2a6d1; --line:#2e2450;
+  --accent:#c4b5fd; --accent2:#ddd6fe; --afg:#2e1065;
+  --ok:#34d399; --okbg:#0c2b23; --warn:#fbbf24; --warnbg:#2a2110; --danger:#f87171; --dangerbg:#2c1414;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -16px rgba(0,0,0,.8);
+ }
+}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",Roboto,sans-serif;
+  -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:1180px;margin:0 auto;padding:0 14px calc(70px + env(safe-area-inset-bottom))}
+.hide{display:none !important}
+.nw{white-space:nowrap}
+
+/* ══ 광고 슬롯 ══ 자리만 비워 두고 화면 폭에 맞는 크기를 AD 가 채운다.
+   크기를 미리 잡아 두어 광고가 늦게 떠도 화면이 밀리지 않는다(애드핏: 광고 공간은 고정되어야 함) */
+.ad-slot{display:flex;align-items:center;justify-content:center;margin:10px auto;max-width:100%}
+.ad-top{width:320px;height:50px;max-width:100%}
+.ad-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:1px dashed var(--line);
+  border-radius:8px;background:var(--card2);color:var(--muted);font-size:11px;letter-spacing:.08em;font-weight:600}
+/* ── 인앱 브라우저 안내 띠 ── 앱 안 WebView 는 파일을 내려받지 못한다 */
+.iabar{display:none;align-items:center;gap:10px;margin:10px 0 0;padding:11px 12px;border-radius:12px;
+  background:var(--warnbg);border:1px solid color-mix(in srgb,var(--warn) 34%,transparent);line-height:1.5}
+body.inapp .iabar{display:flex}
+.iabar .ia-t{flex:1 1 auto;min-width:0;font-size:12.5px;font-weight:700;color:var(--fg)}
+.iabar .ia-t small{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin-top:2px}
+.iabar .ia-go{flex:0 0 auto;font:inherit;font-size:12.5px;font-weight:800;color:#fff;border:0;border-radius:999px;
+  padding:9px 14px;min-height:38px;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+@media (prefers-color-scheme:dark){.iabar .ia-go{color:var(--afg)}}
+.iabar .ia-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:transparent;
+  color:var(--muted);font:inherit;font-size:12px;line-height:1;cursor:pointer}
+/* ── 앱 안에서 열었을 때 막는 창 ── 토스트(z-index 99)보다는 아래에 둔다 */
+.iamodal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:18px;
+  background:rgba(15,8,30,.72);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+body.ia-lock{overflow:hidden}
+body.ia-lock .iamodal{display:flex}
+body.ia-lock .wrap{pointer-events:none}
+.iasheet{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+  width:100%;max-width:420px;max-height:92vh;overflow:auto;padding:22px 18px 16px;text-align:center}
+.iasheet .iaic{font-size:34px;line-height:1;margin-bottom:10px}
+.iasheet h2{font-size:17.5px;font-weight:800;letter-spacing:-.02em;margin:0 0 10px;line-height:1.45;text-wrap:balance}
+.iap{font-size:13.5px;font-weight:600;color:var(--muted);line-height:1.7;margin:0 0 14px}
+.iap b{color:var(--fg);font-weight:800}
+.iasteps{text-align:left;margin:0 0 16px;padding:12px 14px 12px 32px;border-radius:12px;background:var(--card2);
+  font-size:13px;font-weight:600;color:var(--muted);line-height:1.7}
+.iasteps li+li{margin-top:5px}
+.iasteps b{color:var(--fg);font-weight:800}
+.iabtn{display:block;width:100%;font:inherit;font-size:15px;font-weight:800;color:#fff;border:0;border-radius:12px;
+  padding:14px;min-height:52px;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:var(--shadow)}
+@media (prefers-color-scheme:dark){.iabtn{color:var(--afg)}}
+.iafine{margin:12px 0 0;font-size:12px;font-weight:600;color:var(--muted);line-height:1.6}
+.iafine button{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:0;padding:6px 8px;
+  text-decoration:underline;cursor:pointer;min-height:36px}
+.dwarn{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--warnbg);font-size:12.5px;font-weight:700;line-height:1.6}
+.dwarn button{font:inherit;font-size:12.5px;font-weight:800;color:var(--accent);background:none;border:0;padding:9px 2px;margin:-9px 0;
+  text-decoration:underline;cursor:pointer}
+.ad-lab{display:block;text-align:center;font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--muted);opacity:.7;margin:12px 0 -4px}
+body.no-ad .ad-slot,.ad-none{display:none !important}
+/* PC 옆 칸 — 미리보기 카드 바로 위 320×50 (좁은 화면에서는 숨긴다) */
+@media (max-width:979px){#ad-side,#ad-mid-pc{display:none}}
+@media (min-width:980px){#ad-side{margin:14px auto 0}#ad-mid{display:none}#ad-mid-pc{margin:12px auto 0}}
+/* 본문 광고는 버튼·입력칸에서 넉넉히 떼어 놓는다 — 실수로 눌리는 자리는 금지 */
+#ad-mid{margin:18px auto}
+
+/* ── 하단 오버형 ── 콘텐츠를 가리지 않도록 본문 아래 여백을 같이 늘린다(애드핏: 콘텐츠를 덮는 배치 금지).
+   고르는 중·미리보기를 보는 중에는 띄우지 않는다 — 핵심 행동 중 광고 노출 금지 조항 */
+#anchor{position:fixed;left:0;right:0;bottom:0;z-index:45;display:flex;align-items:center;justify-content:center;
+  background:var(--card);border-top:1px solid var(--line);box-shadow:0 -8px 22px -14px rgba(0,0,0,.55);
+  padding:8px 4px calc(8px + env(safe-area-inset-bottom));transform:translateY(120%);
+  /* 바 위쪽에 붙은 「광고」 라벨·닫기는 translateY 로 내려도 화면에 걸쳐 남는다 — 통째로 감춘다 */
+  visibility:hidden;pointer-events:none;transition:transform .22s,visibility 0s linear .22s}
+#anchor.on{transform:none;visibility:visible;pointer-events:auto;transition:transform .22s,visibility 0s}
+#anchor .ad-slot{margin:0}
+#anchor .amk{position:absolute;left:10px;top:-11px;font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--muted);
+  background:var(--card);border:1px solid var(--line);border-radius:5px;padding:0 5px;line-height:15px}
+/* 닫기는 광고 영역 밖에 둔다 — 광고 안에 닫기 버튼을 넣는 것은 금지(오클릭 방지) */
+#anchor .axl{position:absolute;right:6px;top:-38px;width:36px;height:36px;border-radius:50%;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13px;line-height:1;box-shadow:var(--shadow)}
+#anchor .axl::before{content:'';position:absolute;inset:-6px}
+body.anch .wrap{padding-bottom:calc(124px + env(safe-area-inset-bottom))}
+body.anch #toast{bottom:calc(118px + env(safe-area-inset-bottom))}
+@media (min-width:980px){#anchor{display:none}}
+
+/* ── 저장 완료 카드 ── 화면을 덮지 않고 본문 흐름 안에 펼친다 */
+#doneCard{border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+#doneCard .ad-lab{margin-top:16px}
+.dmsg{margin:0 0 10px;font-size:14px;font-weight:700;line-height:1.6}
+.dsteps{margin:0;padding:0 0 0 20px;font-size:13px;font-weight:600;line-height:1.75;color:var(--muted)}
+.dsteps b{color:var(--fg);font-weight:800}
+
+header{text-align:center;padding:14px 0 2px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.logo .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:var(--shadow)}
+.tag{font-size:14.5px;font-weight:600;color:var(--muted);margin:8px 0 0;text-wrap:balance}
+.tag b{color:var(--fg)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
+.badge{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--okbg);color:var(--ok);border:1px solid transparent}
+.badge.gray{background:var(--card2);color:var(--muted);border-color:var(--line)}
+
+/* ── 두 칸 배치 · 넓은 화면에서 미리보기를 옆에 붙인다 ── */
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:0 16px}
+@media (min-width:980px){
+  .layout{grid-template-columns:minmax(0,1fr) 470px;align-items:start}
+  /* 옆 칸이 화면보다 길면 스스로 스크롤한다 — sticky 만 두면 완료 카드가 화면 밖에 남는다 */
+  .side{position:sticky;top:8px;max-height:calc(100vh - 16px);overflow:auto;overscroll-behavior:contain;
+    scrollbar-width:thin;padding:0 2px 12px}
+}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-top:14px}
+.card h2{font-size:12px;font-weight:800;color:var(--muted);margin:0 0 12px;letter-spacing:.07em;
+  display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card h2 .n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;margin-right:6px;
+  background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);letter-spacing:0;font-size:11.5px}
+.pvinfo{font-size:11.5px;font-weight:700;color:var(--accent);letter-spacing:0;text-align:right;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.row{margin-top:16px}
+.row:first-child{margin-top:0}
+.lab{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:13.5px;font-weight:800;margin-bottom:8px}
+.lab .hint{font-weight:500;color:var(--muted);font-size:12px;text-align:right}
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:6px}
+.seg button{min-width:0;border:1px solid var(--line);background:var(--card2);color:var(--fg);font:inherit;font-size:13px;
+  font-weight:700;padding:8px 6px;border-radius:11px;cursor:pointer;min-height:44px;transition:.15s;line-height:1.3}
+.seg button i{display:block;font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:2px}
+.seg button:hover{border-color:var(--accent)}
+.seg button.on{border-color:transparent;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:var(--shadow)}
+.seg button.on i{color:rgba(255,255,255,.85)}
+@media (prefers-color-scheme:dark){.seg button.on{color:var(--afg)}.seg button.on i{color:rgba(46,16,101,.75)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:12.5px;font-weight:700;
+  padding:7px 11px;border-radius:999px;cursor:pointer;min-height:40px;line-height:1.25}
+.chip:hover{border-color:var(--accent)}
+.chip.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--card));color:var(--accent)}
+.chip:disabled{opacity:.4;cursor:default}
+.sub-h{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+
+/* ── 1. 사진 ── */
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;
+  border:2px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;background:var(--card2);
+  padding:22px 14px;min-height:150px;cursor:pointer;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--card2))}
+.drop .big{font-size:30px;line-height:1}
+.drop b{font-size:15px;font-weight:800}
+.drop span{font-size:12.5px;font-weight:600;color:var(--muted)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.samples{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.samples .k{font-size:12px;font-weight:800;color:var(--muted);margin-right:2px}
+.samples .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 5px}
+.samples .chip canvas{width:28px;height:28px;border-radius:7px;display:block}
+.cropwrap{position:relative;display:flex;justify-content:center;align-items:center;border-radius:12px;overflow:hidden;
+  background:repeating-conic-gradient(color-mix(in srgb,var(--line) 70%,transparent) 0 25%,transparent 0 50%) 0 0/16px 16px;
+  touch-action:none;user-select:none;-webkit-user-select:none}
+#cropCv{display:block;max-width:100%;cursor:move;touch-action:none}
+.srcbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.srcname{flex:1 1 100%;font-size:12px;font-weight:700;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#srcBox details.adjd{margin-top:14px;border-top:1px solid var(--line);padding:12px 0 0}
+details.adjd summary{font-size:13px;font-weight:800;color:var(--muted)}
+details.adjd summary span{font-weight:600;font-size:12px}
+.adj{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px}
+@media (max-width:430px){.adj{grid-template-columns:minmax(0,1fr)}}
+.adj label{display:block;font-size:12px;font-weight:800;color:var(--muted)}
+.adj label output{float:right;color:var(--accent)}
+.adj input{width:100%;accent-color:var(--accent);height:30px}
+
+/* ── 2. 종류 ── */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:7px}
+.tbtn{display:flex;flex-direction:column;align-items:center;gap:5px;border:1px solid var(--line);background:var(--card2);color:var(--fg);
+  font:inherit;padding:10px 4px 9px;border-radius:13px;cursor:pointer;min-height:92px;transition:.15s;line-height:1.25;text-align:center}
+.tbtn:hover{border-color:var(--accent)}
+.tbtn svg{width:34px;height:34px;flex:0 0 auto}
+.tbtn b{font-size:13px;font-weight:800;letter-spacing:-.01em}
+.tbtn i{font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted)}
+.tbtn.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--card));box-shadow:0 0 0 1px var(--accent) inset}
+.tbtn.on b{color:var(--accent)}
+
+/* ── 3. 크기 · 색 ── */
+.nf{position:relative;min-width:0;display:block}
+.nf span{position:absolute;left:10px;top:5px;font-size:10.5px;font-weight:800;color:var(--muted);pointer-events:none;letter-spacing:.02em}
+.nf input,.nf select{display:block;width:100%;font:inherit;font-size:16px;font-weight:700;color:var(--fg);background:var(--card2);
+  border:1px solid var(--line);border-radius:10px;padding:19px 10px 5px;min-height:50px}
+.nf input:focus,.nf select:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.cgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:13.5px;font-weight:700}
+.chk input{flex:0 0 auto;width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent)}
+.chk i{display:block;font-style:normal;font-size:12px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.6}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input[type=range]{flex:1 1 auto;accent-color:var(--accent);height:32px;min-width:0}
+.rng output{flex:0 0 auto;min-width:64px;text-align:right;font-size:13.5px;font-weight:800;color:var(--accent)}
+.rng .nf{flex:0 0 92px}
+.calc{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.6}
+.calc b{color:var(--accent)}
+
+.note{border-radius:11px;padding:10px 12px;font-size:12.5px;font-weight:600;line-height:1.65;margin-top:11px}
+.note b{font-weight:800}
+.note.info{background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+.note.warn{background:var(--warnbg);color:var(--warn)}
+.fine{font-size:12px;font-weight:600;color:var(--muted);line-height:1.65;margin:9px 0 0}
+.fine b{color:var(--fg)}
+
+/* ── 미리보기 · 저장 ── */
+.btn{flex:1 1 90px;border:1px solid var(--line);background:var(--card2);color:var(--fg);font:inherit;font-size:14px;font-weight:800;
+  padding:10px 10px;border-radius:12px;cursor:pointer;min-height:54px;transition:.15s;display:inline-flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1px;text-align:center;line-height:1.25}
+.btn i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--muted)}
+.btn:hover:not(:disabled){border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.pri{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:var(--shadow)}
+.btn.pri i{color:rgba(255,255,255,.88)}
+.btn.pri:hover:not(:disabled){filter:brightness(1.06)}
+@media (prefers-color-scheme:dark){.btn.pri{color:var(--afg)}.btn.pri i{color:rgba(46,16,101,.75)}}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.pvstate{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0;white-space:nowrap}
+.tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.tools .grp{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}
+.tb{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;font-weight:800;min-width:42px;min-height:38px;
+  padding:4px 9px;border-radius:9px;cursor:pointer;line-height:1.1;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.tb:hover:not(:disabled){color:var(--fg)}
+.tb.on{background:var(--card);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tb:disabled{opacity:.35;cursor:default}
+.tb .dotc{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.25);flex:0 0 auto}
+.pvbox{position:relative;margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;justify-content:center;align-items:flex-start;
+  background:color-mix(in srgb,var(--line) 45%,var(--card2));overflow:auto;max-height:70vh;min-height:120px}
+.pvbox.zoom{justify-content:flex-start}
+.pvbox canvas{display:block;flex:0 0 auto;background:#fff;box-shadow:0 2px 10px -4px rgba(0,0,0,.35)}
+.pvbox.paint canvas{touch-action:none;cursor:crosshair}
+@media (min-width:980px){.pvbox{max-height:calc(100vh - 330px)}}
+.pvempty{align-self:center;margin:auto;padding:26px 10px;text-align:center;font-size:13px;font-weight:700;color:var(--muted);line-height:1.7}
+.pvmeta{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.65}
+.pvmeta b{color:var(--fg)}
+.pdfopt{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7px;margin-top:10px}
+.warnline{margin-top:8px;font-size:12px;font-weight:700;color:var(--warn);line-height:1.6}
+
+/* ── 색 목록 ── */
+.legsum{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.7;margin:0 0 10px}
+.legsum b{color:var(--fg)}
+.leg{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;max-height:420px;overflow:auto;padding:2px}
+@media (min-width:560px){.leg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.li{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--card2);color:var(--fg);font:inherit;text-align:left;
+  padding:5px 8px 5px 5px;border-radius:11px;cursor:pointer;min-height:44px;min-width:0}
+.li:hover{border-color:var(--accent)}
+.li.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+.li svg{width:32px;height:32px;flex:0 0 auto;border-radius:6px;border:1px solid rgba(0,0,0,.18)}
+.li .tx{flex:1 1 auto;min-width:0;line-height:1.3}
+.li .tx b{display:block;font-size:12.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li .tx i{display:block;font-style:normal;font-size:10.5px;font-weight:700;color:var(--muted);font-family:ui-monospace,Consolas,monospace}
+.li .ct{flex:0 0 auto;font-size:12px;font-weight:800;color:var(--muted);text-align:right;line-height:1.3}
+.li .ct small{display:block;font-size:10px;font-weight:700;opacity:.8}
+.legact{margin-top:10px;padding:10px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}
+.legact .ttl{font-size:12.5px;font-weight:800;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.legact .ttl .dotc{width:16px;height:16px;border-radius:4px;border:1px solid rgba(0,0,0,.25)}
+.legact .acts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cpick{position:relative;display:inline-flex;align-items:center;gap:6px;overflow:hidden}
+.cpick input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.legact select{font:inherit;font-size:13px;font-weight:700;color:var(--fg);background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:8px 10px;min-height:40px;max-width:100%}
+
+.use{list-style:none;margin:0;padding:0}
+.use li{position:relative;padding-left:26px;margin-bottom:13px;font-size:13.5px;font-weight:600;line-height:1.65}
+.use li:last-child{margin-bottom:0}
+.use li::before{content:"▸";position:absolute;left:4px;top:0;color:var(--accent);font-weight:800}
+.use li b{font-weight:800}
+.use li .d{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-top:3px;line-height:1.7}
+@media (min-width:980px){.use{columns:2;column-gap:28px}.use li{break-inside:avoid}}
+
+details{border-top:1px solid var(--line);padding:12px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:700;font-size:14px;list-style:none;padding:10px 0;margin:-10px 0}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"＋ ";color:var(--accent);font-weight:800}
+details[open] summary::before{content:"－ "}
+details p{margin:8px 0 0;font-size:13.5px;color:var(--muted);line-height:1.8}
+details p b{color:var(--fg)}
+
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px;line-height:1.8}
+footer b{color:var(--fg)}
+
+/* ── 모바일 하단 바 ── 설정을 만지는 동안 미리보기가 화면 밖이면 띄운다 */
+#mbar{position:fixed;left:0;right:0;bottom:0;z-index:50;transform:translateY(115%);transition:transform .22s;
+  background:var(--card);border-top:1px solid var(--line);box-shadow:0 -8px 22px -14px rgba(0,0,0,.55);
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
+#mbar.on{transform:none}
+#mbar .in{max-width:700px;margin:0 auto;display:flex;align-items:center;gap:10px}
+#mbar .k{flex:1 1 auto;min-width:0;font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.03em}
+#mbar .k b{display:block;font-size:13.5px;font-weight:800;color:var(--fg);letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mbar .go{flex:0 0 auto;font:inherit;font-size:13px;font-weight:800;color:#fff;padding:10px 15px;border-radius:999px;border:0;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));min-height:42px}
+@media (prefers-color-scheme:dark){#mbar .go{color:var(--afg)}}
+@media (min-width:980px){#mbar{display:none}}
+/* 휴대폰 — 모양·난이도를 고르면 바로 아래에서 미로를 보여 주고, 그림·종이 설정은 그 아래로 */
+@media (max-width:979px){
+  .layout{display:flex;flex-direction:column}
+  #form,.side{display:contents}
+  #shapeCard{order:1} #lvCard{order:2} #pvCard{order:3} #doneCard{order:4} #pairCard{order:5} #paperCard{order:6}
+}
+
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#1e1533;color:#fff;font-size:13.5px;font-weight:700;line-height:1.5;
+  padding:10px 16px;border-radius:14px;width:max-content;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:92vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast button{font:inherit;font-weight:800;color:#c4b5fd;background:none;border:0;padding:4px 2px 4px 8px;cursor:pointer;pointer-events:auto;text-decoration:underline}
+#toast.act{pointer-events:auto}
+@media (prefers-color-scheme:dark){#toast{background:#efeaff;color:#2e1065}#toast button{color:#6d28d9}}
+
+@media (max-width:430px){
+  .card{padding:14px}
+  .lab{flex-direction:column;align-items:stretch;gap:2px}
+  .lab .hint{text-align:left}
+  .seg button{font-size:12.5px}
+  .tag{font-size:14px}
+  .tb{padding:4px 7px;min-width:40px}
+}
+
+/* ══ 주의 문구 ══ */
+.nbx{border:1px solid var(--warn);border-radius:14px;background:var(--warnbg);padding:14px 15px;margin-top:14px}
+.nbx-h{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800;color:var(--warn);margin:0 0 10px}
+.nbx-h .ic{flex:0 0 auto;width:19px;height:19px;border-radius:6px;background:var(--warn);color:var(--warnbg);
+  font-size:12px;font-weight:800;display:grid;place-items:center;line-height:1}
+.nbx ul{list-style:none;margin:0;padding:0}
+.nbx li{position:relative;padding-left:12px;margin-bottom:7px;font-size:12px;font-weight:600;line-height:1.68;color:var(--warn)}
+.nbx li:last-child{margin-bottom:0}
+.nbx li::before{content:"·";position:absolute;left:1px;top:-1px;font-weight:800}
+.nbx li b{font-weight:800}
+.nbx .nbx-f{margin:11px 0 0;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--warn) 32%,transparent);
+  font-size:12px;font-weight:700;line-height:1.72;color:var(--warn)}
+.nbx .nbx-f b{font-weight:800}
+
+
+/* ══ 미로찾기 전용 ══ */
+.tgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (min-width:640px){.tgrid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.tbtn{min-height:108px;padding:8px 3px 8px}
+.tbtn canvas{width:78px;height:54px;display:block;flex:0 0 auto}
+.sub{margin-top:12px}
+.pics{display:flex;flex-wrap:wrap;gap:6px}
+.pics .chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px 4px 4px}
+.pics .chip canvas{width:28px;height:28px;display:block}
+.pics .chip.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--card));color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.chips .chip.on{border-color:var(--accent);color:var(--accent)}
+.seg.lv{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (min-width:640px){.seg.lv{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.seg.lv button{min-height:52px}
+.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:7px}
+.pbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid var(--line);background:var(--card2);color:var(--fg);
+  font:inherit;padding:8px 4px 7px;border-radius:13px;cursor:pointer;min-height:84px;line-height:1.25;text-align:center;min-width:0}
+.pbtn:hover{border-color:var(--accent)}
+.pbtn canvas{width:84px;height:39px;display:block}
+.pbtn b{font-size:12px;font-weight:800;letter-spacing:-.01em}
+.pbtn i{font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted)}
+.pbtn .pk{font-size:24px;line-height:39px;height:39px;display:block}
+.pbtn .pk.txt{font-size:12px;font-weight:800;color:var(--accent)}
+.pbtn.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--card));box-shadow:0 0 0 1px var(--accent) inset}
+.pbtn.on b{color:var(--accent)}
+.imgrow{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.imgrow canvas{width:96px;height:72px;border-radius:10px;border:1px solid var(--line);flex:0 0 auto;
+  background:repeating-conic-gradient(color-mix(in srgb,var(--line) 70%,transparent) 0 25%,transparent 0 50%) 0 0/12px 12px}
+.imgname{flex:1 1 140px;min-width:0;font-size:12.5px;line-height:1.5}
+.imgname b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imgname span{color:var(--muted);font-size:11.5px;font-weight:600}
+.regen{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pnav{display:flex;align-items:center;gap:4px;margin-left:auto}
+.pnav .tb{min-width:40px}
+.pnav output{min-width:54px;text-align:center;font-size:12.5px;font-weight:800;color:var(--fg)}
+.pvbox canvas{max-width:100%;height:auto}
+.pvbox.play{background:var(--card2)}
+.pvbox.play canvas{cursor:crosshair;touch-action:none;box-shadow:0 1px 6px -3px rgba(0,0,0,.3)}
+.tinput{display:block;width:100%;font:inherit;font-size:16px;font-weight:700;color:var(--fg);background:var(--card2);
+  border:1px solid var(--line);border-radius:10px;padding:12px 11px;min-height:48px;margin-top:8px}
+.tinput:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+#textIn{margin-top:0}
+.playbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;padding:9px 10px;border-radius:12px;
+  background:color-mix(in srgb,var(--accent) 9%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}
+.playbar .st{flex:1 1 160px;min-width:0;font-size:13.5px;font-weight:800;line-height:1.4}
+.playbar .st small{display:block;font-size:11.5px;font-weight:700;color:var(--muted)}
+.playbar .chip{min-height:38px}
+.win{color:var(--ok)}
+details.more{border-top:1px solid var(--line);margin-top:14px;padding:12px 0 0}
+details.more summary{font-size:13px;font-weight:800;color:var(--muted)}
+details.more summary span{font-weight:600;font-size:12px}
+details.more .row{margin-top:14px}
+.rng input[type=range]{height:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ╔══════════════════════════════════════════════════════════════════════╗
+     ║  광고 자리 ① 맨 위 · 320×50 (모바일·PC 같은 크기)                     ║
+     ║  단위 ID 는 스크립트 아래쪽 AD.units 한 곳에서 바꿉니다.               ║
+     ║  ins·script 를 여기 직접 쓰지 않고 AD 가 넣는 이유                     ║
+     ║   · 보이는 자리만 부르려고(안 보이는 광고는 부르지 않음)               ║
+     ║   · 한 페이지 4개 제한을 코드 한 곳에서 지키려고                       ║
+     ║  크기는 휴대폰에 들어가는 것만 씁니다 — 320×50 · 320×100 · 300×250     ║
+     ║  한 화면에 4곳 — 모바일 ① 맨 위 ③ 본문 ④ 완료 카드 ⑤ 하단 오버형      ║
+     ║              PC   ① 맨 위 ② 옆 칸 맨 위 ③ 옆 칸 맨 아래 ④ 완료 카드   ║
+     ╚══════════════════════════════════════════════════════════════════════╝ -->
+<div class="ad-slot ad-top" id="ad-top"></div>
+
+<!-- 네이버·카카오 앱 안에서 열렸을 때만 보이는 띠 (body.inapp) -->
+<div class="iabar" id="iabar">
+  <div class="ia-t"><span id="iaMsg">앱 안에서 열려서 미로 문제지 PDF 저장이 안 될 수 있어요.</span>
+    <small id="iaSub">크롬·사파리에서 열면 바로 저장됩니다.</small></div>
+  <button class="ia-go" id="iaGo" type="button">크롬에서 열기</button>
+  <button class="ia-x" id="iaX" type="button" aria-label="안내 닫기">✕</button>
+</div>
+
+<header>
+  <div class="logo"><span class="ico"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h5M15 4v5M9 15h6v5M9 9v6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>미로찾기 만들기</span></div>
+  <p class="tag">고를 때마다 <b>새 미로</b>를 만들어 <b>A4&nbsp;문제지·정답지</b>로 뽑아 줍니다 — 유아용 아주 쉬운 미로부터 어른용 끝판왕까지</p>
+  <div class="badges">
+    <span class="badge">🔒 설치·업로드 없음</span>
+    <span class="badge gray">난이도 6단계</span>
+    <span class="badge gray">이름 글자 미로</span>
+    <span class="badge gray">정답지 자동 · A4 PDF</span>
+  </div>
+</header>
+
+<div class="layout">
+<main id="form">
+
+<!-- 1. 모양 -->
+<section class="card" id="shapeCard">
+  <h2><span><span class="n">1</span>미로 모양</span><span class="pvinfo" id="shapeHint"></span></h2>
+  <div class="tgrid" id="tgrid"></div>
+  <p class="fine" id="shapeDesc"></p>
+  <div class="sub hide" id="picBox">
+    <div class="pics" id="pics"></div>
+  </div>
+  <div class="sub hide" id="textBox">
+    <input type="text" class="tinput" id="textIn" maxlength="12" placeholder="예: 사랑해 · 생일 축하해 · 아이 이름" aria-label="미로로 만들 글자" autocomplete="off">
+    <div class="chips" id="textChips" style="margin-top:8px">
+      <button type="button" class="chip" data-v="사랑해">사랑해</button>
+      <button type="button" class="chip" data-v="생일 축하해">생일 축하해</button>
+      <button type="button" class="chip" data-v="미로">미로</button>
+      <button type="button" class="chip" data-v="2027">2027</button>
+      <button type="button" class="chip" data-v="ABC">ABC</button>
+    </div>
+    <p class="fine">12글자까지 · 다섯 글자부터 두 줄로 나눕니다(띄어쓰기가 있으면 그 자리에서). 떨어진 글자·받침은 <b>좁은 다리</b>로 이어 한 미로가 됩니다. 글자가 많을수록 칸이 촘촘해집니다.</p>
+  </div>
+  <div class="sub hide" id="imgBox">
+    <label class="drop" id="drop">
+      <span class="big">🖼️</span>
+      <b>그림 넣기</b>
+      <span>눌러서 고르거나 끌어다 놓기 · 붙여넣기(Ctrl+V)</span>
+      <span>까만 실루엣·투명 배경 PNG·색칠 도안처럼 <b>모양이 또렷한 그림</b>이 잘 됩니다</span>
+      <input type="file" id="fileIn" accept="image/*" aria-label="그림 고르기">
+    </label>
+    <div class="imgrow hide" id="imgRow">
+      <canvas id="imgThumb" width="96" height="72"></canvas>
+      <div class="imgname"><b id="imgName"></b><span>그림은 이 브라우저 밖으로 나가지 않습니다</span></div>
+      <button class="chip" type="button" id="invBtn">◐ 모양 뒤집기</button>
+    </div>
+  </div>
+</section>
+
+<!-- 2. 난이도 -->
+<section class="card" id="lvCard">
+  <h2><span><span class="n">2</span>난이도</span><span class="pvinfo" id="lvHint"></span></h2>
+  <div class="seg lv" id="segLv"></div>
+  <p class="fine">나이는 고르는 데 참고만 하세요. 종이에는 나이 대신 <b>난이도 ★</b>만 찍힙니다. 처음이면 한 단계 쉬운 것부터 해 보세요.</p>
+  <details class="more" id="moreBox">
+    <summary>더 맞추기 <span id="moreSum">칸 수·길 모양·출발 자리·벽 굵기</span></summary>
+    <div class="row">
+      <div class="lab"><span>칸 수</span><span class="hint" id="densCalc"></span></div>
+      <div class="rng"><input type="range" id="densIn" min="50" max="200" step="5" value="100" aria-label="칸 수 조절"><output id="densOut">100%</output></div>
+    </div>
+    <div class="row">
+      <div class="lab"><span>길 모양</span><span class="hint">구불구불 = 갈림길이 적고 길이 긺 · 갈림길 많이 = 고를 곳이 많음</span></div>
+      <div class="seg" id="segRoad"></div>
+    </div>
+    <div class="row">
+      <div class="lab"><span>출발·도착 자리</span><span class="hint">가장 먼 곳끼리 = 정답 길이 가장 긺</span></div>
+      <div class="seg" id="segEnds"></div>
+    </div>
+    <div class="row">
+      <div class="lab"><span>벽 굵기</span></div>
+      <div class="seg" id="segWall"></div>
+    </div>
+  </details>
+</section>
+
+<!-- 3. 출발·도착 그림 -->
+<section class="card" id="pairCard">
+  <h2><span><span class="n">3</span>누가 어디로 갈까요</span><span class="pvinfo" id="pairHint"></span></h2>
+  <div class="pairs" id="pairs"></div>
+  <p class="fine">그림은 이 도구가 그린 것이라 인쇄해 나눠 줘도 됩니다. <b>흑백 선</b>으로 뽑으면 미로를 푼 뒤 그림에 색칠도 할 수 있어요.</p>
+</section>
+
+<!-- 4. 종이 -->
+<section class="card" id="paperCard">
+  <h2><span><span class="n">4</span>종이 꾸미기</span><span class="pvinfo" id="paperHint"></span></h2>
+  <div class="row">
+    <div class="lab"><span>만들 미로 수</span><span class="hint">모두 다른 미로로 한 권에 묶습니다</span></div>
+    <div class="seg" id="segCount"></div>
+  </div>
+  <div class="row">
+    <div class="lab"><span>한 장에</span><span class="hint">작은 아이는 1개를 크게</span></div>
+    <div class="seg" id="segPer"></div>
+  </div>
+  <div class="row">
+    <div class="lab"><span>종이 방향</span><span class="hint">A4 · 자동은 미로 모양에 맞춥니다</span></div>
+    <div class="seg" id="segPaper"></div>
+  </div>
+  <div class="row">
+    <div class="lab"><span>그림 색</span><span class="hint">흑백 프린터라면 흑백 선</span></div>
+    <div class="seg" id="segColor"></div>
+  </div>
+  <div class="row">
+    <div class="lab"><span>맨 위 칸</span></div>
+    <div class="seg" id="segHead"></div>
+    <input type="text" class="tinput hide" id="titleIn" maxlength="40" placeholder="예: 겨울방학 미로 놀이 · 해바라기반 집중력 활동" aria-label="제목">
+  </div>
+  <div class="row">
+    <div class="lab"><span>정답지</span><span class="hint">빨간 선으로 길을 그린 쪽</span></div>
+    <div class="seg" id="segAns"></div>
+  </div>
+</section>
+
+</main>
+
+<aside class="side" id="side">
+  <!-- 광고 자리 ② PC 옆 칸 맨 위 320×50 · 좁은 화면에서는 숨깁니다 -->
+  <div class="ad-slot" id="ad-side"></div>
+  <section class="card pv" id="pvCard">
+    <h2><span>미리보기 · 저장</span><span class="pvstate" id="pvState"></span></h2>
+    <div class="actions">
+      <button class="btn pri" id="dlPdf" type="button" disabled>PDF로 저장<i id="pdfSub">A4 · 정답지 포함</i></button>
+      <button class="btn" id="dlPng" type="button" disabled>이 쪽 그림으로<i>PNG · 300dpi</i></button>
+    </div>
+    <div class="tools">
+      <div class="grp" role="group" aria-label="보기" id="viewGrp">
+        <button class="tb" type="button" data-v="q">문제</button>
+        <button class="tb" type="button" data-v="a">정답</button>
+        <button class="tb" type="button" data-v="play">화면에서 풀기</button>
+      </div>
+      <div class="pnav" id="pnav">
+        <button class="tb" type="button" id="pPrev" aria-label="앞 쪽">◀</button>
+        <output id="pNo">1 / 1</output>
+        <button class="tb" type="button" id="pNext" aria-label="다음 쪽">▶</button>
+      </div>
+    </div>
+    <div class="pvbox" id="pvBox"><div class="pvempty" id="pvEmpty">미로를 만드는 중…</div><canvas id="pv" width="10" height="10" class="hide" aria-label="미로 문제지 미리보기"></canvas></div>
+    <div class="playbar hide" id="playBar">
+      <div class="st" id="playSt"></div>
+      <button class="chip" type="button" id="showAns">정답 보기</button>
+      <button class="chip" type="button" id="playReset">처음부터</button>
+      <button class="chip" type="button" id="nextMaze">다음 미로 ▶</button>
+    </div>
+    <div class="regen">
+      <button class="chip" type="button" id="reGen">🎲 이 미로 다시 만들기</button>
+      <button class="chip" type="button" id="reGenAll">🎲 전부 새로</button>
+    </div>
+    <div class="pvmeta" id="pvMeta"></div>
+  </section>
+
+  <!-- 광고 자리 ④ 저장 완료 카드 300×250 — 누른 다음에 펼쳐지고, 화면을 덮지 않습니다.
+       닫기는 카드 머리(광고에서 멀리 떨어진 곳)에 둡니다 — 광고 안 닫기 버튼은 금지 -->
+  <section class="card hide" id="doneCard">
+    <h2><span id="doneTitle">미로 문제지 PDF를 저장했습니다</span><button class="chip" id="doneHide" type="button">닫기</button></h2>
+    <p class="dmsg" id="doneMsg"></p>
+    <ol class="dsteps" id="doneSteps">
+      <li><b>인쇄할 때</b> — 「용지에 맞춤」 대신 <b>실제 크기(100%)</b>로 찍으면 여백이 고르게 나옵니다.</li>
+      <li>정답지는 <b>맨 뒤</b>(또는 문제 바로 다음 쪽)에 있습니다. 나눠 줄 때는 인쇄 창의 「페이지」 칸에 문제 쪽 번호만 적으세요.</li>
+      <li>한 장을 <b>코팅</b>하거나 투명 파일에 끼우면 보드마커로 여러 번 풀 수 있습니다.</li>
+    </ol>
+    <p class="dwarn hide" id="doneInapp">파일이 안 보이나요? 앱 안 브라우저는 내려받기가 막혀 있습니다.
+      <button type="button" id="doneGo">다른 브라우저로 열기</button></p>
+    <div id="doneAd"><span class="ad-lab">광고</span><div class="ad-slot" id="ad-done"></div></div>
+  </section>
+
+  <!-- 광고 자리 ③ 320×100 · PC — 옆 칸 맨 아래. 휴대폰에서는 숨기고 아래 #ad-mid 자리를 씁니다 -->
+  <div class="ad-slot" id="ad-mid-pc"></div>
+</aside>
+</div>
+
+<!-- 광고 자리 ③ 본문 중간 320×100(휴대폰) — 설정 카드가 다 끝난 자리에 둡니다(입력 중 광고 금지 조항).
+     버튼·입력칸에서 18px 이상 떼어 놓습니다. PC 에서는 숨기고 옆 칸 맨 아래 자리를 씁니다 -->
+<div class="ad-slot" id="ad-mid"></div>
+
+<section class="card">
+  <h2><span>이럴 때 씁니다</span></h2>
+  <ul class="use">
+    <li><b>유아 집중력·연필 쥐기 놀이</b>
+      <span class="d"><b>아주 쉬움</b>은 칸이 손가락만큼 넓어 세 살 아이도 크레파스로 길을 따라갈 수 있습니다. 토끼→당근처럼 「누가 어디로 가는지」가 있어 끝까지 가 보려고 합니다. 벽 굵기를 <b>굵게</b> 두면 선을 넘었는지 아이가 스스로 봅니다.</span></li>
+    <li><b>초등 쉬는 시간·방학 숙제 묶음</b>
+      <span class="d">미로 수를 <b>20개</b>로 두면 모두 다른 미로가 한 권의 PDF로 나오고, 정답지는 맨 뒤에 모입니다. 「조금 어려움」 이상은 갈림길이 많아 고학년도 시간이 꽤 걸립니다.</span></li>
+    <li><b>어르신 인지 활동지</b>
+      <span class="d">글씨와 칸이 큰 <b>아주 쉬움·쉬움</b>에 흑백 선 그림으로 뽑으면, 미로를 푼 뒤 그림 색칠까지 이어 갑니다. 종이에는 나이가 찍히지 않고 난이도 별만 나옵니다.</span></li>
+    <li><b>이름 미로 선물</b>
+      <span class="d"><b>글자 모양</b>에 아이 이름이나 「생일 축하해」를 넣으면 글자 모양 그대로 길이 납니다. 떨어진 글자는 좁은 다리로 이어져 처음 글자에서 끝 글자까지 한 번에 풀립니다.</span></li>
+    <li><b>교실 화면으로 다 같이</b>
+      <span class="d"><b>화면에서 풀기</b>를 누르면 미로가 크게 나오고, 손가락이나 마우스로 길을 그으면 벽을 못 지나가게 막아 줍니다. 도착하면 걸린 시간이 나와 모둠 대결로 씁니다.</span></li>
+    <li><b>하트·별·동물 모양 미로</b>
+      <span class="d">하트·별·집·나무·물고기·고양이·곰·사과·구름·나비·자동차·공룡 모양 안에 길을 냅니다. 동그라미 미로는 바깥에서 가운데로, 벌집 미로는 여섯 방향으로 길이 갈라집니다.</span></li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2><span>자주 묻는 것</span></h2>
+
+  <details>
+    <summary>난이도는 어떻게 고르나요?</summary>
+    <p>대략 <b>아주 쉬움</b>(3~4세, 네모 5칸 안팎) · <b>쉬움</b>(5~6세) · <b>보통</b>(7세·초등 1학년) · <b>조금 어려움</b>(초등 2~3학년) · <b>어려움</b>(초등 4~6학년) · <b>아주 어려움</b>(어른) 순서입니다.
+      아이마다 차이가 크니 처음에는 한 단계 쉬운 것으로 시작해, 혼자 끝까지 풀면 한 단계씩 올리세요. <b>더 맞추기</b>에서 칸 수를 50~200%로 조금씩 바꿀 수도 있습니다.</p>
+  </details>
+
+  <details>
+    <summary>정답 길은 정말 하나뿐인가요?</summary>
+    <p>네. 모든 칸을 빠짐없이 한 번씩만 이어 가며 길을 파기 때문에, 어느 두 칸 사이에도 길이 <b>딱 하나</b>만 있고 빙 돌아오는 고리가 없습니다. 그래서 정답지의 빨간 선이 유일한 답이고, 막다른 길을 하나라도 지나면 되돌아와야 합니다.</p>
+  </details>
+
+  <details>
+    <summary>「구불구불」과 「갈림길 많이」는 무엇이 다른가요?</summary>
+    <p><b>구불구불</b>은 한 방향으로 계속 파 나가 길이 길고 갈림길이 적습니다 — 어린아이가 따라가기 좋습니다.
+      <b>갈림길 많이</b>는 여기저기서 조금씩 파서 짧은 막다른 길이 많고 고를 곳이 많습니다. <b>자동</b>은 난이도에 맞춰 섞어 씁니다. 미리보기 아래에 정답 길 칸 수와 막다른 길 수가 나오니 비교해 보세요.</p>
+  </details>
+
+  <details>
+    <summary>글자 모양 미로는 어떻게 만들어지나요?</summary>
+    <p>굵은 글씨로 글자를 그린 뒤, 칸마다 절반 넘게 글자가 칠해진 칸만 미로 칸으로 씁니다. 획이 너무 가늘면 테두리를 덧칠해 굵히고, 「이」의 ㅇ 과 ㅣ 처럼 떨어진 조각은 가장 가까운 곳끼리 <b>한 칸 폭 다리</b>로 잇습니다.
+      글자가 많거나 받침이 복잡하면 칸이 촘촘해져 어려워집니다 — 짧은 말일수록 또렷합니다.</p>
+  </details>
+
+  <details>
+    <summary>내 그림으로도 되나요?</summary>
+    <p>됩니다. 까만 실루엣이나 투명 배경 PNG, 선이 굵은 색칠 도안처럼 <b>안과 밖이 또렷한 그림</b>이 잘 됩니다. 밝은 쪽과 어두운 쪽을 나눠 테두리와 다른 쪽을 모양으로 잡는데, 거꾸로 잡히면 <b>모양 뒤집기</b>를 누르세요. 그림은 이 브라우저 밖으로 나가지 않습니다.</p>
+  </details>
+
+  <details>
+    <summary>화면에서 풀기는 어떻게 하나요?</summary>
+    <p>미리보기 위 <b>화면에서 풀기</b>를 누르고 출발 그림 옆 입구 칸에서 손가락(또는 마우스)을 대고 끌면 길이 그어집니다. 벽은 지나가지 않고, 왔던 칸으로 되돌아가면 그은 길이 지워집니다. 컴퓨터에서는 <b>방향키</b>로도 움직입니다. 도착하면 걸린 시간이 나옵니다.</p>
+  </details>
+
+  <details>
+    <summary>흑백 프린터로 뽑아도 되나요?</summary>
+    <p>네. 미로 벽은 원래 검은색이고, <b>그림 색</b>을 흑백 선으로 두면 출발·도착 그림도 색칠할 수 있는 선 그림이 됩니다. 정답 길만 빨간색인데 흑백으로 찍어도 진한 회색 선으로 또렷하게 보입니다.</p>
+  </details>
+
+  <details>
+    <summary>인쇄하면 크기가 달라져요</summary>
+    <p>인쇄 창에서 <b>실제 크기(100%)</b>를 고르세요. 「용지에 맞춤」이면 프린터마다 조금씩 줄어듭니다. PDF는 벽·그림이 모두 선(벡터)이라 A3로 크게 뽑아도 깨지지 않습니다.</p>
+  </details>
+
+  <details>
+    <summary>그림이나 글자가 서버로 올라가나요?</summary>
+    <p>올라가지 않습니다. 미로를 파고 PDF·PNG를 만드는 일이 모두 <b>이 브라우저 안에서</b> 끝납니다. 고른 설정(모양·난이도·종이)만 다음에 쓰기 편하게 이 브라우저에 기억해 둡니다. 페이지를 연 뒤 인터넷을 끊어도 그대로 동작합니다.</p>
+  </details>
+
+  <details>
+    <summary>네이버·카카오톡 앱에서 열었더니 저장이 안 돼요</summary>
+    <p>앱 안에서 열리는 화면(인앱 브라우저)은 <b>파일 내려받기가 막혀 있는 경우가 많습니다.</b>
+      그래서 앱 안에서 열면 안내 창이 먼저 뜹니다. <b>크롬에서 열기</b>(아이폰은 주소 복사 후 사파리)로 옮긴 다음 써 주세요.</p>
+  </details>
+</section>
+
+<!-- ══ 주의 문구 ══ -->
+<div class="nbx">
+  <div class="nbx-h"><span class="ic">!</span><span>미로 문제지를 쓰기 전에 확인하세요</span></div>
+  <ul>
+    <li>미로는 <b>자동으로</b> 만들어집니다. 길이 하나뿐이도록 만들지만, 인쇄해 나눠 주기 전에 <b>정답</b> 보기로 한 번 확인하세요. 아주 작은 칸(어려움 이상·한 장에 4개)은 프린터에 따라 선이 뭉쳐 보일 수 있습니다.</li>
+    <li><b>내 그림 모양</b>에 만화 캐릭터·회사 로고처럼 남이 만든 그림을 쓰면 <b>집이나 교실 안에서만</b> 쓰세요. 인쇄해 팔거나 블로그·카페에 배포하면 저작권·상표권 침해가 될 수 있습니다. 이 도구가 만든 미로와 출발·도착 그림은 자유롭게 인쇄해 나눠 줄 수 있습니다.</li>
+    <li>글자 모양에 아이 이름을 넣은 문제지를 온라인에 올릴 때는 이름이 드러나지 않게 하세요.</li>
+    <li>어르신 활동지로 쓰더라도 이 문제지는 <b>놀이·활동 자료</b>이며, 치매 예방·치료 효과를 보장하거나 인지 상태를 판정하는 도구가 아닙니다.</li>
+  </ul>
+  <p class="nbx-f">이 도구는 <b>있는 그대로 제공되며</b>, 만든 문제지나 이를 사용해 발생한
+    어떠한 손해(저작권 분쟁, 인쇄 결과 포함)에 대해서도 <b>제작자와 운영자는 법적 책임을 지지 않습니다.</b></p>
+</div>
+
+<footer>
+  <b>미로찾기 만들기</b> · 업로드 없이 브라우저에서 처리<br>
+  네모·동그라미·벌집·그림·글자 모양 미로 · 외부 라이브러리 없음<br>
+  고른 설정 말고는 아무것도 저장·전송하지 않으며, 페이지를 연 뒤에는 인터넷 없이도 동작합니다.
+</footer>
+</div>
+
+<!-- 앱 안(네이버·카카오톡 등)에서 열렸을 때 사용을 막는 창.
+     WebView 는 파일 내려받기를 못 해서, 미로를 다 골라도 PDF가 저장되지 않는다 -->
+<div class="iamodal" id="iaModal" role="dialog" aria-modal="true" aria-labelledby="iaTitle">
+  <div class="iasheet">
+    <div class="iaic">📱</div>
+    <h2 id="iaTitle">앱 안에서는 미로 문제지 PDF를 저장할 수 없습니다</h2>
+    <p class="iap" id="iaDesc"></p>
+    <ol class="iasteps" id="iaSteps"></ol>
+    <button class="iabtn" id="iaGo2" type="button">크롬에서 열기</button>
+    <p class="iafine"><button type="button" id="iaStay">저장은 안 해도 돼요 · 그냥 볼게요</button></p>
+  </div>
+</div>
+
+<!-- 광고 자리 ⑤ 하단 오버형 320×50(모바일) — 읽는 구간에서만 올라오고, 고르는 중·미리보기 중·창이 열렸을 때는
+     내려가 있습니다. 바 높이만큼 본문 아래 여백을 늘려 아무것도 가리지 않습니다 -->
+<div id="anchor"><span class="amk">광고</span><div class="ad-slot" id="ad-anchor"></div>
+  <button class="axl" id="anchorX" type="button" aria-label="광고 닫기">✕</button></div>
+
+<div id="mbar"><div class="in"><div class="k">미로 미리보기 · 저장<b id="mbarTxt">미로</b></div><button class="go" id="mbarGo" type="button">미리보기 ↑</button></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+/* ══════════════════════════════════════════════════════════════
+   미로찾기 만들기 — 모양·난이도를 고르면 미로를 새로 만들어 A4 문제지·정답지(PDF·PNG)로 뽑는다
+   처리는 모두 이 브라우저 안에서 끝난다(서버로 보내는 코드 없음).
+     모양    네모 격자 · 동그라미(둥근 고리) · 벌집(육각형) · 그림 모양(하트·별…) · 글자 모양 · 내 그림 모양
+     만들기  칸을 이웃끼리 잇는 그래프를 만들고, 한 칸에서 출발해 길을 파 나간다(성장하는 나무 방식 —
+             「가장 최근 칸에서 계속 파기」 비율이 높으면 구불구불 긴 길, 낮으면 갈림길이 많은 길)
+     정답    벽이 없는 칸끼리만 따라가는 너비 우선 탐색 — 길이 하나뿐인 미로라 그 길이 곧 정답
+   ══════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const PT = 72 / 25.4;                /* 1mm = 2.8346pt */
+const LS = 'maze_maker.opt';
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const escH = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function toast(msg, ms) {
+  const t = $('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), ms || 2600);
+}
+const sleep0 = () => new Promise(r => setTimeout(r, 0));
+function fmtSize(b) { return b < 1024 ? b + 'B' : b < 1048576 ? (b / 1024).toFixed(0) + 'KB' : (b / 1048576).toFixed(1) + 'MB'; }
+function hex2rgb(h) { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+function makeCanvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; }
+function freeCanvas(c) { if (c) { c.width = 1; c.height = 1; } }
+
+/* ── 난수 ── 같은 씨앗이면 같은 미로가 나온다(다시 그려도 그대로) */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const newSeed = () => ((Math.random() * 2147483646) | 0) + 1;
+
+/* ── 조사 ── 받침 있으면 앞 글자, 없으면 뒤 글자(「이/가」 「을/를」) */
+function josa(word, pair) {
+  const ch = word.charCodeAt(word.length - 1);
+  const has = ch >= 0xAC00 && ch <= 0xD7A3 ? (ch - 0xAC00) % 28 > 0 : false;
+  return word + (has ? pair[0] : pair[1]);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   미로 그래프 — 칸(중심 좌표·이웃)과 경계(벽 한 조각)로만 이루어진다.
+   벽 조각은 곧은 선(L) 또는 원점을 중심으로 한 원호(A). 화면·PNG·PDF 가 같은 목록으로 그린다.
+   좌표 단위는 「칸 하나」 — 그릴 때 mm 로 늘린다.
+   ══════════════════════════════════════════════════════════════ */
+const SQ3 = Math.sqrt(3);
+function newGraph(kind) { return { kind, n: 0, cx: [], cy: [], adj: [], bnd: [], E: [] }; }
+function addCell(G, x, y) { G.cx.push(x); G.cy.push(y); G.adj.push([]); G.bnd.push([]); return G.n++; }
+/* b < 0 이면 바깥 테두리. adj 는 [이웃, 경계번호, 이웃, 경계번호 …] 로 납작하게 둔다(빠르게) */
+function addEdge(G, a, b, s) {
+  const e = G.E.length; s.a = a; s.b = b; G.E.push(s);
+  if (b >= 0) { G.adj[a].push(b, e); G.adj[b].push(a, e); } else G.bnd[a].push(e);
+  return e;
+}
+function segEnds(s) {
+  if (s.t === 'A') return [s.r * Math.cos(s.a0), s.r * Math.sin(s.a0), s.r * Math.cos(s.a1), s.r * Math.sin(s.a1)];
+  return [s.x1, s.y1, s.x2, s.y2];
+}
+function segMid(s) {
+  if (s.t === 'A') { const a = (s.a0 + s.a1) / 2; return [s.r * Math.cos(a), s.r * Math.sin(a)]; }
+  return [(s.x1 + s.x2) / 2, (s.y1 + s.y2) / 2];
+}
+function edgeBetween(G, a, b) {
+  const A = G.adj[a];
+  for (let k = 0; k < A.length; k += 2) if (A[k] === b) return A[k + 1];
+  return -1;
+}
+
+/* ── 네모 격자(모양을 오려 낸 격자 포함) ── mask 가 있으면 1 인 칸만 쓴다 */
+function buildGrid(C, R, mask) {
+  const G = newGraph(mask ? 'mask' : 'grid'); G.C = C; G.R = R;
+  const id = new Int32Array(C * R).fill(-1);
+  for (let j = 0; j < R; j++) for (let i = 0; i < C; i++) if (!mask || mask[j * C + i]) id[j * C + i] = addCell(G, i + 0.5, j + 0.5);
+  const at = (i, j) => (i < 0 || j < 0 || i >= C || j >= R) ? -1 : id[j * C + i];
+  for (let j = 0; j < R; j++) for (let i = 0; i < C; i++) {
+    const c = at(i, j); if (c < 0) continue;
+    addEdge(G, c, at(i, j - 1), { t: 'L', x1: i, y1: j, x2: i + 1, y2: j });       /* 위 — 위 칸이 있으면 둘이 나눠 쓴다 */
+    addEdge(G, c, at(i - 1, j), { t: 'L', x1: i, y1: j, x2: i, y2: j + 1 });       /* 왼쪽 */
+    if (at(i + 1, j) < 0) addEdge(G, c, -1, { t: 'L', x1: i + 1, y1: j, x2: i + 1, y2: j + 1 });
+    if (at(i, j + 1) < 0) addEdge(G, c, -1, { t: 'L', x1: i, y1: j + 1, x2: i + 1, y2: j + 1 });
+  }
+  G.locate = (x, y) => at(Math.floor(x), Math.floor(y));
+  G.bounds = { x0: 0, y0: 0, x1: C, y1: R };
+  if (mask) {
+    let x0 = C, y0 = R, x1 = 0, y1 = 0;
+    for (let c = 0; c < G.n; c++) { x0 = Math.min(x0, G.cx[c] - 0.5); x1 = Math.max(x1, G.cx[c] + 0.5); y0 = Math.min(y0, G.cy[c] - 0.5); y1 = Math.max(y1, G.cy[c] + 0.5); }
+    G.bounds = { x0, y0, x1, y1 };
+  }
+  return G;
+}
+
+/* ── 벌집(육각형, 꼭짓점이 위) ── 반지름 Rh 의 큰 육각형 안 칸들. 칸 중심 거리 √3 */
+function buildHex(Rh) {
+  const G = newGraph('hex'), W = 2 * Rh + 1, id = new Int32Array(W * W).fill(-1);
+  const at = (q, r) => (Math.abs(q) > Rh || Math.abs(r) > Rh || Math.abs(q + r) > Rh) ? -1 : id[(r + Rh) * W + q + Rh];
+  for (let r = -Rh; r <= Rh; r++) for (let q = -Rh; q <= Rh; q++) {
+    if (Math.abs(q + r) > Rh) continue;
+    id[(r + Rh) * W + q + Rh] = addCell(G, SQ3 * (q + r / 2), 1.5 * r);
+  }
+  /* 경계 k 는 꼭짓점 k(60k−30°)와 k+1 사이, 그 너머 이웃은 DIRS[k] 방향(60k°) */
+  const DIRS = [[1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1]];
+  const cor = (x, y, k) => { const a = (60 * k - 30) * Math.PI / 180; return [x + Math.cos(a), y + Math.sin(a)]; };
+  for (let r = -Rh; r <= Rh; r++) for (let q = -Rh; q <= Rh; q++) {
+    const c = at(q, r); if (c < 0) continue;
+    const x = G.cx[c], y = G.cy[c];
+    for (let k = 0; k < 6; k++) {
+      const nb = at(q + DIRS[k][0], r + DIRS[k][1]);
+      if (nb >= 0 && nb < c) continue;            /* 나눠 쓰는 경계는 한 번만 */
+      const p = cor(x, y, k), p2 = cor(x, y, k + 1);
+      addEdge(G, c, nb, { t: 'L', x1: p[0], y1: p[1], x2: p2[0], y2: p2[1] });
+    }
+  }
+  G.locate = (x, y) => {
+    const qf = (SQ3 / 3 * x - y / 3), rf = 2 / 3 * y, sf = -qf - rf;
+    let q = Math.round(qf), r = Math.round(rf), s = Math.round(sf);
+    const dq = Math.abs(q - qf), dr = Math.abs(r - rf), ds = Math.abs(s - sf);
+    if (dq > dr && dq > ds) q = -r - s; else if (dr > ds) r = -q - s;
+    return at(q, r);
+  };
+  const hx = SQ3 * Rh + SQ3 / 2, hy = 1.5 * Rh + 1;
+  G.bounds = { x0: -hx, y0: -hy, x1: hx, y1: hy };
+  return G;
+}
+
+/* ── 동그라미(둥근 고리) ── 가운데 칸 하나 + 고리 Rn 개. 고리 칸이 너무 길어지면 칸 수를 두 배로 */
+const TH_C0 = 1.5;
+function buildTheta(Rn) {
+  const G = newGraph('theta'), C0 = TH_C0;
+  const ang = (i, n) => -Math.PI / 2 + 2 * Math.PI * i / n;
+  const center = addCell(G, 0, 0);
+  const rings = [[center]], counts = [1];
+  for (let k = 1; k <= Rn; k++) {
+    const rin = C0 + k - 1, rout = rin + 1, rm = rin + 0.5;
+    let n;
+    if (k === 1) n = Math.max(6, Math.round(2 * Math.PI * rm / 1.3));
+    else n = 2 * Math.PI * rm / counts[k - 1] > 2.05 ? counts[k - 1] * 2 : counts[k - 1];
+    const ring = [];
+    for (let i = 0; i < n; i++) { const am = ang(i + 0.5, n); ring.push(addCell(G, rm * Math.cos(am), rm * Math.sin(am))); }
+    for (let i = 0; i < n; i++) {
+      const a0 = ang(i, n), a1 = ang(i + 1, n);
+      const par = k === 1 ? center : rings[k - 1][Math.floor(i * counts[k - 1] / n)];
+      addEdge(G, ring[i], par, { t: 'A', r: rin, a0, a1 });
+      addEdge(G, ring[i], ring[(i + 1) % n], { t: 'L', x1: rin * Math.cos(a1), y1: rin * Math.sin(a1), x2: rout * Math.cos(a1), y2: rout * Math.sin(a1) });
+      if (k === Rn) addEdge(G, ring[i], -1, { t: 'A', r: rout, a0, a1 });
+    }
+    rings.push(ring); counts.push(n);
+  }
+  G.rings = rings; G.counts = counts; G.C0 = C0;
+  const Rmax = C0 + Rn;
+  G.locate = (x, y) => {
+    const rr = Math.hypot(x, y);
+    if (rr < C0) return center;
+    const k = Math.floor(rr - C0) + 1;
+    if (k > Rn) return -1;
+    let a = Math.atan2(y, x) + Math.PI / 2; a = ((a % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    return rings[k][Math.min(counts[k] - 1, Math.floor(a / (2 * Math.PI) * counts[k]))];
+  };
+  G.bounds = { x0: -Rmax, y0: -Rmax, x1: Rmax, y1: Rmax };
+  return G;
+}
+
+/* ══ 길 파기 ══ 성장하는 나무(growing tree) — bias 1 이면 깊이 우선(구불구불 긴 길),
+   0 이면 아무 칸이나 골라 이어 붙이기(짧은 막다른 길이 많은 갈림길형). 둘 사이는 섞인다 */
+function carve(G, rnd, bias, s0) {
+  const open = new Uint8Array(G.E.length), vis = new Uint8Array(G.n), list = [s0], nb = [];
+  vis[s0] = 1;
+  while (list.length) {
+    const last = list.length - 1, li = rnd() < bias ? last : (rnd() * list.length) | 0, c = list[li], A = G.adj[c];
+    nb.length = 0;
+    for (let k = 0; k < A.length; k += 2) if (!vis[A[k]]) nb.push(k);
+    if (!nb.length) {
+      if (li === last) list.pop();
+      else if (bias < 0.01) { list[li] = list[last]; list.pop(); }
+      else list.splice(li, 1);
+      continue;
+    }
+    const k = nb[(rnd() * nb.length) | 0];
+    open[A[k + 1]] = 1; vis[A[k]] = 1; list.push(A[k]);
+  }
+  return open;
+}
+/* 벽 없는 칸끼리만 따라가는 거리 */
+function bfs(G, open, s) {
+  const d = new Int32Array(G.n).fill(-1), prev = new Int32Array(G.n).fill(-1), q = new Int32Array(G.n);
+  let h = 0, t = 0; q[t++] = s; d[s] = 0;
+  while (h < t) {
+    const c = q[h++], A = G.adj[c];
+    for (let k = 0; k < A.length; k += 2) {
+      const to = A[k];
+      if (open[A[k + 1]] && d[to] < 0) { d[to] = d[c] + 1; prev[to] = c; q[t++] = to; }
+    }
+  }
+  return { d, prev };
+}
+
+/* ══ 출발·도착 ══ 바깥 테두리 가운데 「밖에서 막힘없이 보이는」 곳만 입구가 될 수 있다
+   (하트 위쪽 오목한 곳처럼 앞에 다른 칸이 가로막는 자리에는 그림을 놓을 수 없다) */
+function exposed(G, mx, my, nx, ny) {
+  const b = G.bounds, lim = Math.max(b.x1 - b.x0, b.y1 - b.y0) + 2;
+  for (let t = 0.3; t < lim; t += 0.4) {
+    const x = mx + nx * t, y = my + ny * t;
+    if (x < b.x0 - 1 || x > b.x1 + 1 || y < b.y0 - 1 || y > b.y1 + 1) return true;
+    if (G.locate(x, y) >= 0) return false;
+  }
+  return true;
+}
+function boundaryCands(G) {
+  if (G._cand) return G._cand;
+  const out = [];
+  for (let c = 0; c < G.n; c++) for (const e of G.bnd[c]) {
+    const [mx, my] = segMid(G.E[e]);
+    let nx = mx - G.cx[c], ny = my - G.cy[c];
+    const l = Math.hypot(nx, ny) || 1; nx /= l; ny /= l;
+    if (!exposed(G, mx, my, nx, ny)) continue;
+    out.push({ c, e, mx, my, nx, ny });
+  }
+  return (G._cand = out);
+}
+const EPS = 1e-6;
+function argBest(list, better) { let b = null; for (const x of list) if (!b || better(x, b)) b = x; return b; }
+/* tb 위→아래 · lr 왼쪽→오른쪽 · center 바깥→가운데(동그라미) · 그 밖은 null(가장 먼 곳끼리로) */
+function fixedEnds(G, mode) {
+  const C = boundaryCands(G);
+  if (!C.length) return null;
+  if (mode === 'center' && G.kind === 'theta') {
+    const s = argBest(C, (a, b) => a.my < b.my - EPS || (Math.abs(a.my - b.my) < EPS && a.mx < b.mx));
+    return { s, g: { c: 0, e: -1, mx: 0, my: 0, nx: 0, ny: 0 } };
+  }
+  if (mode === 'tb') {
+    const up = C.filter(x => x.ny < -0.5), dn = C.filter(x => x.ny > 0.5);
+    if (!up.length || !dn.length) return null;
+    const s = argBest(up, (a, b) => a.my < b.my - EPS || (Math.abs(a.my - b.my) < EPS && a.mx < b.mx - EPS));
+    const g = argBest(dn, (a, b) => a.my > b.my + EPS || (Math.abs(a.my - b.my) < EPS && a.mx > b.mx + EPS));
+    return s.c === g.c ? null : { s, g };
+  }
+  if (mode === 'lr') {
+    const lf = C.filter(x => x.nx < -0.5), rt = C.filter(x => x.nx > 0.5);
+    if (!lf.length || !rt.length) return null;
+    const s = argBest(lf, (a, b) => a.mx < b.mx - EPS || (Math.abs(a.mx - b.mx) < EPS && a.my < b.my - EPS));
+    const g = argBest(rt, (a, b) => a.mx > b.mx + EPS || (Math.abs(a.mx - b.mx) < EPS && a.my > b.my + EPS));
+    return s.c === g.c ? null : { s, g };
+  }
+  return null;
+}
+/* 가장 먼 두 입구 — 아무 입구에서 가장 먼 곳, 다시 거기서 가장 먼 곳(나무의 지름 찾기) */
+function farEnds(G, open) {
+  const C = boundaryCands(G);
+  if (!C.length) return null;
+  const mid = [(G.bounds.x0 + G.bounds.x1) / 2, (G.bounds.y0 + G.bounds.y1) / 2];
+  const out = x => (x.mx - mid[0]) * x.nx + (x.my - mid[1]) * x.ny;
+  /* 한 칸에 입구 후보가 여럿이면 바깥을 가장 똑바로 보는 쪽 */
+  const per = new Map();
+  for (const x of C) { const o = per.get(x.c); if (!o || out(x) > out(o)) per.set(x.c, x); }
+  const L = [...per.values()];
+  const far = (from) => { const { d } = bfs(G, open, from); return argBest(L, (a, b) => d[a.c] > d[b.c]); };
+  const A = far(L[0].c), B = far(A.c);
+  return A.c === B.c ? null : { s: A, g: B };
+}
+
+/* ══ 미로 하나 만들기 ══ def = { G(만든 그래프), seed, bias, ends } */
+function makeMaze(G, seed, bias, mode) {
+  const rnd = mulberry32(seed);
+  let ends = mode === 'far' ? null : fixedEnds(G, mode);
+  const s0 = ends ? ends.s.c : (rnd() * G.n) | 0;
+  const open = carve(G, rnd, bias, s0);
+  if (!ends) ends = farEnds(G, open) || fixedEnds(G, 'tb') || fixedEnds(G, 'lr');
+  if (!ends) throw new Error('미로 입구를 둘 자리를 찾지 못했습니다');
+  const { d, prev } = bfs(G, open, ends.s.c);
+  const path = [];
+  for (let c = ends.g.c; c >= 0; c = prev[c]) path.push(c);
+  path.reverse();
+  let dead = 0, reach = 0;
+  for (let c = 0; c < G.n; c++) {
+    if (d[c] >= 0) reach++;
+    let deg = 0; const A = G.adj[c];
+    for (let k = 1; k < A.length; k += 2) if (open[A[k]]) deg++;
+    if (deg === 1 && c !== ends.s.c && c !== ends.g.c) dead++;
+  }
+  const doors = new Set([ends.s.e, ends.g.e].filter(e => e >= 0));
+  return { G, open, s: ends.s, g: ends.g, path, dead, reach, doors, seed };
+}
+
+/* ══ 벽을 한 붓 줄로 잇기 ══ 꼭짓점에 벽이 딱 둘 모이면 이어 그린다 — PDF 가 가볍고 꺾인 곳이 매끈하다 */
+function wallChains(M, outer) {
+  const ck = outer ? '_wcO' : '_wcI';
+  if (M[ck]) return M[ck];
+  const G = M.G, ids = [];
+  for (let e = 0; e < G.E.length; e++) if (!M.open[e] && !M.doors.has(e) && (G.E[e].b < 0) === !!outer) ids.push(e);
+  const key = (x, y) => Math.round(x * 512) + ':' + Math.round(y * 512);
+  const vmap = new Map(), ends = [];
+  ids.forEach((e, k) => {
+    const p = segEnds(G.E[e]), a = key(p[0], p[1]), b = key(p[2], p[3]);
+    ends.push([a, b]);
+    for (const v of [a, b]) { let l = vmap.get(v); if (!l) vmap.set(v, l = []); l.push(k); }
+  });
+  const used = new Uint8Array(ids.length), out = [];
+  const nextAt = (v, from) => { const l = vmap.get(v); if (!l || l.length !== 2) return -1; const o = l[0] === from ? l[1] : l[0]; return used[o] ? -1 : o; };
+  for (let k0 = 0; k0 < ids.length; k0++) {
+    if (used[k0]) continue;
+    used[k0] = 1;
+    const chain = [{ e: ids[k0], rev: false }];
+    let v = ends[k0][1], cur = k0;
+    for (;;) { const o = nextAt(v, cur); if (o < 0) break; used[o] = 1; const rev = ends[o][1] === v; chain.push({ e: ids[o], rev }); v = rev ? ends[o][0] : ends[o][1]; cur = o; }
+    v = ends[k0][0]; cur = k0;
+    const pre = [];
+    for (;;) { const o = nextAt(v, cur); if (o < 0) break; used[o] = 1; const rev = ends[o][0] === v; pre.push({ e: ids[o], rev }); v = rev ? ends[o][1] : ends[o][0]; cur = o; }
+    out.push(pre.reverse().concat(chain));
+  }
+  return (M[ck] = out);
+}
+function traceChain(g, G, chain) {
+  let first = true;
+  for (const { e, rev } of chain) {
+    const s = G.E[e], p = segEnds(s);
+    if (first) { g.moveTo(rev ? p[2] : p[0], rev ? p[3] : p[1]); first = false; }
+    if (s.t === 'A') g.arc(0, 0, s.r, rev ? s.a1 : s.a0, rev ? s.a0 : s.a1, rev);
+    else g.lineTo(rev ? p[0] : p[2], rev ? p[1] : p[3]);
+  }
+}
+/* 정답 길 — 입구 → 칸 가운데 → 두 칸 사이 경계 가운데 → … → 출구 */
+function pathPoints(M, cells) {
+  const G = M.G, pts = [];
+  cells = cells || M.path;
+  if (cells === M.path && M.s.e >= 0) pts.push(segMid(G.E[M.s.e]));
+  for (let i = 0; i < cells.length; i++) {
+    const c = cells[i];
+    pts.push([G.cx[c], G.cy[c]]);
+    if (i + 1 < cells.length) { const e = edgeBetween(G, c, cells[i + 1]); if (e >= 0) pts.push(segMid(G.E[e])); }
+  }
+  if (cells === M.path && M.g.e >= 0) pts.push(segMid(G.E[M.g.e]));
+  return pts;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   모양 미로의 틀(하트·별…·글자·내 그림)과 출발·도착 그림
+   · 틀은 캔버스에 칠해 본 뒤 칸마다 3×3 점을 찍어 절반 넘게 칠해진 칸만 미로 칸으로 쓴다
+   · 떨어진 조각(글자 「이」의 ㅇ 과 ㅣ 처럼)은 가장 가까운 곳끼리 한 칸 폭 다리로 이어 한 미로로 만든다
+   · 출발·도착 그림은 모두 이 도구가 선으로 그린다(가로·세로 -50~50 칸 안). 화면·PDF 가 같은 그리기 함수를 쓴다
+   ══════════════════════════════════════════════════════════════ */
+const INK = '#1f2937';
+const FONT = '-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",Roboto,sans-serif';
+
+/* ── 칠한 그림 → 칸 ── alpha(0~255) 배열을 칸 크기 cell(px)로 나눈다 */
+function gridFromAlpha(al, W, H, cell) {
+  let x0 = W, y0 = H, x1 = -1, y1 = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (al[y * W + x] >= 128) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  if (x1 < 0) return null;
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+  const C = Math.max(2, Math.round(bw / cell)), cs = bw / C, R = Math.max(2, Math.round(bh / cs)), rs = bh / R;
+  const mask = new Uint8Array(C * R);
+  const S = [1 / 6, 0.5, 5 / 6];
+  for (let j = 0; j < R; j++) for (let i = 0; i < C; i++) {
+    let hit = 0;
+    for (const sy of S) for (const sx of S) {
+      const px = Math.min(W - 1, Math.floor(x0 + (i + sx) * cs)), py = Math.min(H - 1, Math.floor(y0 + (j + sy) * rs));
+      if (al[py * W + px] >= 128) hit++;
+    }
+    if (hit >= 5) mask[j * C + i] = 1;
+  }
+  return { C, R, mask };
+}
+/* 떨어진 조각 잇기 — 작은 티끌(minFrac 미만)은 버리고, 나머지는 가장 가까운 곳으로 다리를 놓는다 */
+function connectMask(m, minFrac) {
+  const { C, R, mask } = m, N = C * R;
+  const lab = new Int32Array(N).fill(-1), sizes = [];
+  const q = new Int32Array(N);
+  for (let s = 0; s < N; s++) {
+    if (!mask[s] || lab[s] >= 0) continue;
+    const L = sizes.length; let h = 0, t = 0; q[t++] = s; lab[s] = L;
+    while (h < t) {
+      const c = q[h++], i = c % C, j = (c / C) | 0;
+      const nb = [i > 0 ? c - 1 : -1, i < C - 1 ? c + 1 : -1, j > 0 ? c - C : -1, j < R - 1 ? c + C : -1];
+      for (const n of nb) if (n >= 0 && mask[n] && lab[n] < 0) { lab[n] = L; q[t++] = n; }
+    }
+    sizes.push(t);
+  }
+  if (!sizes.length) return m;
+  const big = Math.max(...sizes), keep = sizes.map(z => z >= Math.max(2, big * minFrac));
+  for (let c = 0; c < N; c++) if (mask[c] && !keep[lab[c]]) { mask[c] = 0; lab[c] = -1; }
+  const main = sizes.indexOf(big), inMain = new Uint8Array(N);
+  for (let c = 0; c < N; c++) if (lab[c] === main) inMain[c] = 1;
+  let left = keep.filter(Boolean).length - 1;
+  const prev = new Int32Array(N);
+  for (let guard = 0; left > 0 && guard < 80; guard++) {
+    prev.fill(-2); let h = 0, t = 0;
+    for (let c = 0; c < N; c++) if (inMain[c]) { q[t++] = c; prev[c] = -1; }
+    let hit = -1;
+    while (h < t && hit < 0) {
+      const c = q[h++], i = c % C, j = (c / C) | 0;
+      const nb = [i > 0 ? c - 1 : -1, i < C - 1 ? c + 1 : -1, j > 0 ? c - C : -1, j < R - 1 ? c + C : -1];
+      for (const n of nb) {
+        if (n < 0 || prev[n] !== -2) continue;
+        prev[n] = c;
+        if (mask[n] && !inMain[n]) { hit = n; break; }
+        q[t++] = n;
+      }
+    }
+    if (hit < 0) break;
+    const L = lab[hit];
+    for (let c = prev[hit]; c >= 0 && !inMain[c]; c = prev[c]) { mask[c] = 1; inMain[c] = 1; }
+    for (let c = 0; c < N; c++) if (lab[c] === L) inMain[c] = 1;
+    left--;
+  }
+  for (let c = 0; c < N; c++) if (!inMain[c]) mask[c] = 0;
+  return m;
+}
+
+/* ── 그림 모양 ── 상자(w×h) 안에 칠하는 함수 */
+function fE(x, cx, cy, rx, ry, rot) { x.beginPath(); x.ellipse(cx, cy, rx, ry, rot || 0, 0, Math.PI * 2); x.fill(); }
+function fP(x, pts) { x.beginPath(); x.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) x.lineTo(pts[i], pts[i + 1]); x.closePath(); x.fill(); }
+function fR(x, x0, y0, w, h, r) { x.beginPath(); rrectPath(x, x0, y0, w, h, r || 0); x.fill(); }
+function rrectPath(x, x0, y0, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  if (r <= 0) { x.rect(x0, y0, w, h); return; }
+  x.moveTo(x0 + r, y0); x.lineTo(x0 + w - r, y0); x.quadraticCurveTo(x0 + w, y0, x0 + w, y0 + r);
+  x.lineTo(x0 + w, y0 + h - r); x.quadraticCurveTo(x0 + w, y0 + h, x0 + w - r, y0 + h);
+  x.lineTo(x0 + r, y0 + h); x.quadraticCurveTo(x0, y0 + h, x0, y0 + h - r);
+  x.lineTo(x0, y0 + r); x.quadraticCurveTo(x0, y0, x0 + r, y0); x.closePath();
+}
+function starPts(cx, cy, R, r, n) {
+  const p = [];
+  for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, rr = i % 2 ? r : R; p.push(cx + rr * Math.cos(a), cy + rr * Math.sin(a)); }
+  return p;
+}
+const SHAPES = [
+  { k: 'heart', n: '하트', w: 100, h: 90, d: x => { x.beginPath(); x.moveTo(50, 88); x.bezierCurveTo(10, 62, -6, 30, 12, 11); x.bezierCurveTo(27, -3, 45, 4, 50, 19); x.bezierCurveTo(55, 4, 73, -3, 88, 11); x.bezierCurveTo(106, 30, 90, 62, 50, 88); x.closePath(); x.fill(); } },
+  { k: 'star', n: '별', w: 100, h: 96, d: x => fP(x, starPts(50, 53, 51, 25, 5)) },
+  { k: 'house', n: '집', w: 100, h: 96, d: x => { fP(x, [0, 48, 50, 3, 100, 48]); fR(x, 13, 42, 74, 54); fR(x, 66, 10, 14, 30); } },
+  { k: 'tree', n: '나무', w: 100, h: 100, d: x => { fP(x, [50, 0, 80, 32, 20, 32]); fP(x, [50, 18, 89, 58, 11, 58]); fP(x, [50, 40, 98, 86, 2, 86]); fR(x, 39, 82, 22, 18); } },
+  { k: 'fish', n: '물고기', w: 100, h: 70, d: x => { fE(x, 40, 35, 38, 27); fP(x, [64, 35, 100, 8, 100, 62]); } },
+  { k: 'cat', n: '고양이', w: 100, h: 92, d: x => { fE(x, 50, 56, 46, 36); fP(x, [8, 44, 14, 0, 42, 24]); fP(x, [92, 44, 86, 0, 58, 24]); } },
+  { k: 'bear', n: '곰', w: 100, h: 92, d: x => { x.beginPath(); x.arc(50, 54, 38, 0, Math.PI * 2); x.fill(); x.beginPath(); x.arc(19, 20, 16, 0, Math.PI * 2); x.fill(); x.beginPath(); x.arc(81, 20, 16, 0, Math.PI * 2); x.fill(); } },
+  { k: 'apple', n: '사과', w: 100, h: 100, d: x => { x.beginPath(); x.moveTo(50, 30); x.bezierCurveTo(16, 10, -8, 50, 22, 88); x.bezierCurveTo(34, 102, 44, 96, 50, 92); x.bezierCurveTo(56, 96, 66, 102, 78, 88); x.bezierCurveTo(108, 50, 84, 10, 50, 30); x.closePath(); x.fill(); fR(x, 45, 6, 10, 28, 4); fE(x, 68, 14, 16, 8, -0.45); } },
+  { k: 'cloud', n: '구름', w: 100, h: 72, d: x => { for (const [a, b, r] of [[22, 46, 21], [45, 30, 27], [70, 38, 23], [86, 52, 14]]) { x.beginPath(); x.arc(a, b, r, 0, Math.PI * 2); x.fill(); } fR(x, 8, 46, 86, 26, 12); } },
+  { k: 'butterfly', n: '나비', w: 100, h: 92, d: x => { fE(x, 25, 30, 23, 21, -0.5); fE(x, 75, 30, 23, 21, 0.5); fE(x, 31, 71, 15, 14, 0.4); fE(x, 69, 71, 15, 14, -0.4); fE(x, 50, 50, 6, 34); } },
+  { k: 'car', n: '자동차', w: 100, h: 62, d: x => { fR(x, 0, 24, 100, 26, 9); x.beginPath(); x.moveTo(20, 28); x.lineTo(32, 4); x.lineTo(70, 4); x.lineTo(84, 28); x.closePath(); x.fill(); for (const a of [24, 76]) { x.beginPath(); x.arc(a, 50, 12, 0, Math.PI * 2); x.fill(); } } },
+  { k: 'dino', n: '공룡', w: 100, h: 78, d: x => { fE(x, 46, 46, 30, 20); x.beginPath(); x.moveTo(66, 40); x.quadraticCurveTo(78, 22, 74, 6); x.lineTo(92, 4); x.quadraticCurveTo(100, 8, 96, 16); x.lineTo(84, 18); x.quadraticCurveTo(88, 34, 74, 56); x.closePath(); x.fill(); x.beginPath(); x.moveTo(20, 40); x.quadraticCurveTo(4, 44, 0, 62); x.quadraticCurveTo(14, 56, 30, 56); x.closePath(); x.fill(); fR(x, 28, 54, 12, 24, 4); fR(x, 52, 54, 12, 24, 4); } }
+];
+const SHAPE = Object.fromEntries(SHAPES.map(s => [s.k, s]));
+function shapeAlpha(k, scale) {
+  const S = SHAPE[k] || SHAPES[0], sc = scale || 4, W = Math.round(S.w * sc) + 4, H = Math.round(S.h * sc) + 4;
+  const cv = makeCanvas(W, H), x = cv.getContext('2d', { willReadFrequently: true });
+  x.translate(2, 2); x.scale(sc, sc); x.fillStyle = '#000'; S.d(x);
+  const d = x.getImageData(0, 0, W, H).data, al = new Uint8Array(W * H);
+  for (let i = 0; i < al.length; i++) al[i] = d[i * 4 + 3];
+  freeCanvas(cv);
+  return { al, W, H, unit: sc };
+}
+
+/* ── 글자 모양 ── 굵은 글씨로 칠하고, 획이 칸 두 개보다 가늘면 테두리를 덧칠해 굵힌다 */
+function splitLines(text) {
+  const t = String(text || '').replace(/\s+/g, ' ').trim();
+  const chars = [...t.replace(/ /g, '')];
+  if (chars.length <= 4) return [t];   /* 다섯 글자부터는 두 줄이 종이를 더 크게 쓴다 */
+  const sp = [];
+  for (let i = 0; i < t.length; i++) if (t[i] === ' ') sp.push(i);
+  if (sp.length) {
+    const mid = t.length / 2, at = sp.reduce((a, b) => Math.abs(b - mid) < Math.abs(a - mid) ? b : a);
+    return [t.slice(0, at).trim(), t.slice(at + 1).trim()].filter(Boolean);
+  }
+  const arr = [...t], h = Math.ceil(arr.length / 2);
+  return [arr.slice(0, h).join(''), arr.slice(h).join('')];
+}
+function textAlpha(text, cellsPerLine) {
+  const lines = splitLines(text), fpx = 220, lh = Math.round(fpx * 1.08), pad = 30;
+  const m = makeCanvas(10, 10).getContext('2d');
+  m.font = '900 ' + fpx + 'px ' + FONT;
+  const wmax = Math.max(1, ...lines.map(l => m.measureText(l).width));
+  const W = Math.ceil(wmax) + pad * 2, H = lh * lines.length + pad * 2;
+  const cv = makeCanvas(W, H), x = cv.getContext('2d', { willReadFrequently: true });
+  const cell = fpx / cellsPerLine, fat = Math.max(0, 2.05 * cell - 0.12 * fpx);
+  x.font = m.font; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#000'; x.strokeStyle = '#000';
+  x.lineJoin = 'round'; x.lineWidth = fat;
+  lines.forEach((l, i) => { const y = pad + lh * (i + 0.5); x.fillText(l, W / 2, y); if (fat > 0) x.strokeText(l, W / 2, y); });
+  const d = x.getImageData(0, 0, W, H).data, al = new Uint8Array(W * H);
+  for (let i = 0; i < al.length; i++) al[i] = d[i * 4 + 3];
+  freeCanvas(cv);
+  return { al, W, H, cell };
+}
+
+/* ── 내 그림 모양 ── 투명 PNG 면 투명하지 않은 곳, 아니면 밝기를 오츠 방식으로 둘로 나눠 테두리와 다른 쪽 */
+function imageAlpha(img, invert) {
+  const L = 480, k = Math.min(1, L / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
+  const W = Math.max(8, Math.round((img.naturalWidth || img.width) * k)), H = Math.max(8, Math.round((img.naturalHeight || img.height) * k));
+  const cv = makeCanvas(W, H), x = cv.getContext('2d', { willReadFrequently: true });
+  x.drawImage(img, 0, 0, W, H);
+  const d = x.getImageData(0, 0, W, H).data, n = W * H, al = new Uint8Array(n);
+  freeCanvas(cv);
+  let tr = 0;
+  for (let i = 0; i < n; i++) if (d[i * 4 + 3] < 128) tr++;
+  if (tr / n > 0.03) {
+    for (let i = 0; i < n; i++) al[i] = d[i * 4 + 3] >= 128 ? 255 : 0;
+  } else {
+    const g = new Uint8Array(n), hist = new Float64Array(256);
+    for (let i = 0; i < n; i++) { g[i] = Math.round(0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2]); hist[g[i]]++; }
+    let sum = 0; for (let v = 0; v < 256; v++) sum += v * hist[v];
+    let wB = 0, sB = 0, best = -1, th = 128;
+    for (let v = 0; v < 256; v++) {
+      wB += hist[v]; if (!wB) continue;
+      const wF = n - wB; if (!wF) break;
+      sB += v * hist[v];
+      const mB = sB / wB, mF = (sum - sB) / wF, bt = wB * wF * (mB - mF) * (mB - mF);
+      if (bt > best) { best = bt; th = v; }
+    }
+    /* 테두리 화소 대부분이 어느 쪽인지 보고, 반대쪽을 모양으로 */
+    let bd = 0, bn = 0;
+    for (let xx = 0; xx < W; xx++) { bn += 2; if (g[xx] <= th) bd++; if (g[(H - 1) * W + xx] <= th) bd++; }
+    for (let yy = 0; yy < H; yy++) { bn += 2; if (g[yy * W] <= th) bd++; if (g[yy * W + W - 1] <= th) bd++; }
+    const darkIsShape = bd / bn < 0.5;
+    for (let i = 0; i < n; i++) al[i] = ((g[i] <= th) === darkIsShape) ? 255 : 0;
+  }
+  if (invert) for (let i = 0; i < n; i++) al[i] = 255 - al[i];
+  return { al, W, H };
+}
+
+/* ══ 출발·도착 그림 ══ col(색) 은 컬러면 그 색, 흑백 선이면 흰색을 돌려준다 */
+function pOut(x, col, c) { x.fillStyle = col(c); x.fill(); x.stroke(); }
+function eP(x, cx, cy, rx, ry, rot) { x.beginPath(); x.ellipse(cx, cy, rx, ry, rot || 0, 0, Math.PI * 2); }
+function cP(x, cx, cy, r) { x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); }
+function polyP(x, pts) { x.beginPath(); x.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) x.lineTo(pts[i], pts[i + 1]); x.closePath(); }
+function dot(x, cx, cy, r) { cP(x, cx, cy, r); x.fillStyle = INK; x.fill(); }
+function ln(x, pts) { x.beginPath(); x.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) x.lineTo(pts[i], pts[i + 1]); x.stroke(); }
+/* 여러 도형을 겹친 하나의 모양 — 두 배 굵기로 먼저 긋고 그 위를 칠하면 바깥 테두리만 남는다 */
+function union(x, col, c, parts) {
+  const lw = x.lineWidth; x.lineWidth = lw * 2;
+  for (const p of parts) { p(); x.stroke(); }
+  x.lineWidth = lw; x.fillStyle = col(c);
+  for (const p of parts) { p(); x.fill(); }
+}
+function blush(x, col, pts) { if (col('#f9a8d4') === '#ffffff') return; x.fillStyle = '#fbcfe8'; for (let i = 0; i < pts.length; i += 2) { cP(x, pts[i], pts[i + 1], 5); x.fill(); } }
+const ICONS = {
+  rabbit: (x, col) => {
+    for (const s of [-1, 1]) { eP(x, 13 * s, -26, 9, 24, 0.12 * s); pOut(x, col, '#ffffff'); eP(x, 13 * s, -24, 4, 15, 0.12 * s); x.fillStyle = col('#f9a8d4'); x.fill(); }
+    eP(x, 0, 16, 30, 26); pOut(x, col, '#ffffff');
+    blush(x, col, [-18, 24, 18, 24]);
+    dot(x, -10, 12, 3.4); dot(x, 10, 12, 3.4);
+    eP(x, 0, 20, 3.6, 2.6); x.fillStyle = col('#f472b6'); x.fill(); x.stroke();
+    x.beginPath(); x.moveTo(0, 23); x.quadraticCurveTo(-1, 28, -6, 28); x.moveTo(0, 23); x.quadraticCurveTo(1, 28, 6, 28); x.stroke();
+  },
+  carrot: (x, col) => {
+    for (const a of [-0.5, 0, 0.5]) { eP(x, Math.sin(a) * 13, -30, 6, 15, a); pOut(x, col, '#86efac'); }
+    x.beginPath(); x.moveTo(-17, -20); x.quadraticCurveTo(0, -26, 17, -20); x.lineTo(3, 44); x.quadraticCurveTo(0, 49, -3, 44); x.closePath(); pOut(x, col, '#fb923c');
+    ln(x, [-9, -4, -2, -2]); ln(x, [4, 10, 10, 8]); ln(x, [-5, 22, 1, 24]);
+  },
+  puppy: (x, col) => {
+    union(x, col, '#f5d0a9', [() => cP(x, 0, 6, 28)]);
+    for (const s of [-1, 1]) { eP(x, 27 * s, 2, 10, 22, -0.32 * s); pOut(x, col, '#b07a4f'); }
+    eP(x, 0, 19, 14, 11); pOut(x, col, '#ffffff');
+    dot(x, -11, 1, 3.4); dot(x, 11, 1, 3.4);
+    eP(x, 0, 13, 5.4, 3.8); x.fillStyle = INK; x.fill();
+    x.beginPath(); x.moveTo(0, 16); x.lineTo(0, 22); x.moveTo(-6, 24); x.quadraticCurveTo(0, 28, 6, 24); x.stroke();
+  },
+  bone: (x, col) => {
+    union(x, col, '#fef3c7', [() => { x.beginPath(); rrectPath(x, -30, -8, 60, 16, 5); }, () => cP(x, -32, -9, 10), () => cP(x, -32, 9, 10), () => cP(x, 32, -9, 10), () => cP(x, 32, 9, 10)]);
+  },
+  cat: (x, col) => {
+    union(x, col, '#fdba74', [() => eP(x, 0, 10, 31, 26), () => polyP(x, [-29, 0, -24, -34, -6, -14]), () => polyP(x, [29, 0, 24, -34, 6, -14])]);
+    polyP(x, [-22, -6, -20, -24, -11, -14]); x.fillStyle = col('#fbcfe8'); x.fill();
+    polyP(x, [22, -6, 20, -24, 11, -14]); x.fill();
+    dot(x, -11, 6, 3.3); dot(x, 11, 6, 3.3);
+    polyP(x, [-4, 13, 4, 13, 0, 17]); x.fillStyle = col('#f472b6'); x.fill(); x.stroke();
+    ln(x, [-36, 12, -16, 15]); ln(x, [-36, 20, -16, 18]); ln(x, [36, 12, 16, 15]); ln(x, [36, 20, 16, 18]);
+  },
+  fish: (x, col) => {
+    union(x, col, '#93c5fd', [() => polyP(x, [-20, 0, -46, -18, -46, 18]), () => eP(x, 6, 0, 32, 20)]);
+    dot(x, 22, -5, 3.6);
+    x.beginPath(); x.arc(4, 0, 14, -0.9, 0.9); x.stroke();
+  },
+  mouse: (x, col) => {
+    for (const s of [-1, 1]) { cP(x, 20 * s, -14, 14); pOut(x, col, '#d1d5db'); cP(x, 20 * s, -14, 7.5); x.fillStyle = col('#fbcfe8'); x.fill(); }
+    eP(x, 0, 12, 25, 22); pOut(x, col, '#e5e7eb');
+    dot(x, -9, 8, 3.2); dot(x, 9, 8, 3.2);
+    cP(x, 0, 17, 3.8); x.fillStyle = col('#f472b6'); x.fill(); x.stroke();
+    ln(x, [-30, 14, -12, 17]); ln(x, [-30, 22, -12, 20]); ln(x, [30, 14, 12, 17]); ln(x, [30, 22, 12, 20]);
+  },
+  cheese: (x, col) => {
+    polyP(x, [-42, 4, 30, -26, 42, 4]); pOut(x, col, '#fde68a');
+    x.beginPath(); rrectPath(x, -42, 4, 84, 26, 3); pOut(x, col, '#fcd34d');
+    for (const [a, b, r] of [[-22, 17, 5], [4, 14, 4], [24, 20, 5.5]]) { cP(x, a, b, r); x.fillStyle = col('#fbbf24'); x.fill(); x.stroke(); }
+  },
+  bee: (x, col) => {
+    for (const s of [-1, 1]) { eP(x, 6 + 12 * s, -20, 11, 16, 0.5 * s); pOut(x, col, '#dbeafe'); }
+    eP(x, 6, 8, 30, 20); pOut(x, col, '#fde047');
+    const lw = x.lineWidth; x.lineWidth = 6.5; x.lineCap = 'butt';
+    for (const sx of [-2, 13]) { const t = Math.sqrt(Math.max(0, 1 - Math.pow((sx - 6) / 30, 2))) * 20 - 3; ln(x, [sx, 8 - t, sx, 8 + t]); }
+    x.lineWidth = lw; x.lineCap = 'round';
+    polyP(x, [35, 6, 46, 9, 35, 12]); x.fillStyle = INK; x.fill(); x.stroke();
+    cP(x, -27, 6, 12); pOut(x, col, '#fde047');
+    dot(x, -31, 3, 2.8);
+    x.beginPath(); x.moveTo(-30, -5); x.quadraticCurveTo(-36, -18, -42, -20); x.moveTo(-24, -5); x.quadraticCurveTo(-22, -18, -16, -22); x.stroke();
+    dot(x, -42, -20, 2.4); dot(x, -16, -22, 2.4);
+  },
+  flower: (x, col) => {
+    ln(x, [0, 8, 0, 46]);
+    eP(x, 12, 32, 11, 5.5, -0.5); pOut(x, col, '#86efac');
+    for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; cP(x, Math.cos(a) * 17, -8 + Math.sin(a) * 17, 13); pOut(x, col, '#f9a8d4'); }
+    cP(x, 0, -8, 10); pOut(x, col, '#fde047');
+  },
+  bear: (x, col) => {
+    union(x, col, '#d6a77a', [() => cP(x, -22, -18, 11), () => cP(x, 22, -18, 11), () => cP(x, 0, 6, 29)]);
+    cP(x, -22, -18, 5.5); x.fillStyle = col('#b07a4f'); x.fill(); cP(x, 22, -18, 5.5); x.fill();
+    eP(x, 0, 17, 14, 11); pOut(x, col, '#f5e1c8');
+    dot(x, -11, 1, 3.4); dot(x, 11, 1, 3.4);
+    eP(x, 0, 12, 5.4, 3.8); x.fillStyle = INK; x.fill();
+    x.beginPath(); x.moveTo(0, 15); x.lineTo(0, 20); x.moveTo(-5, 22); x.quadraticCurveTo(0, 25, 5, 22); x.stroke();
+  },
+  honey: (x, col) => {
+    eP(x, 0, 14, 32, 28); pOut(x, col, '#fbbf24');
+    x.beginPath(); rrectPath(x, -22, -22, 44, 12, 4); pOut(x, col, '#f59e0b');
+    x.beginPath(); x.moveTo(-20, -10); x.quadraticCurveTo(-12, 2, -6, -10); x.quadraticCurveTo(0, 8, 8, -10); x.quadraticCurveTo(14, 0, 20, -10); x.stroke();
+    x.beginPath(); rrectPath(x, -16, 6, 32, 18, 4); pOut(x, col, '#fffbeb');
+    ln(x, [-8, 15, 8, 15]);
+  },
+  kid: (x, col) => {
+    cP(x, 0, 8, 27); pOut(x, col, '#fde2c8');
+    x.beginPath(); x.moveTo(-27, 8); x.arc(0, 8, 27, Math.PI, Math.PI * 2); x.bezierCurveTo(22, -2, 10, -10, 2, -6); x.bezierCurveTo(-8, -1, -20, 0, -27, 8); x.closePath(); pOut(x, col, '#8b5a3c');
+    blush(x, col, [-16, 18, 16, 18]);
+    dot(x, -9, 9, 3.2); dot(x, 9, 9, 3.2);
+    x.beginPath(); x.moveTo(-7, 20); x.quadraticCurveTo(0, 26, 7, 20); x.stroke();
+  },
+  house: (x, col) => {
+    x.beginPath(); x.rect(-30, -4, 60, 46); pOut(x, col, '#fef3c7');
+    polyP(x, [-40, -2, 0, -38, 40, -2]); pOut(x, col, '#fca5a5');
+    x.beginPath(); rrectPath(x, -9, 16, 18, 26, 3); pOut(x, col, '#d6a77a');
+    x.beginPath(); x.rect(14, 6, 12, 12); pOut(x, col, '#bfdbfe');
+    x.beginPath(); x.rect(-26, 6, 12, 12); pOut(x, col, '#bfdbfe');
+  },
+  rocket: (x, col) => {
+    polyP(x, [-12, 18, -26, 34, -24, 12]); pOut(x, col, '#fca5a5');
+    polyP(x, [12, 18, 26, 34, 24, 12]); pOut(x, col, '#fca5a5');
+    x.beginPath(); x.moveTo(0, 38); x.quadraticCurveTo(-8, 46, 0, 50); x.quadraticCurveTo(8, 46, 0, 38); pOut(x, col, '#fdba74');
+    x.beginPath(); x.moveTo(0, -46); x.bezierCurveTo(22, -28, 18, 20, 13, 36); x.lineTo(-13, 36); x.bezierCurveTo(-18, 20, -22, -28, 0, -46); x.closePath(); pOut(x, col, '#e5e7eb');
+    cP(x, 0, -10, 8); pOut(x, col, '#93c5fd');
+  },
+  star: (x, col) => { polyP(x, starPts(0, 3, 46, 21, 5)); pOut(x, col, '#fde047'); },
+  car: (x, col) => {
+    x.beginPath(); x.moveTo(-26, -2); x.lineTo(-16, -22); x.lineTo(16, -22); x.lineTo(28, -2); x.closePath(); pOut(x, col, '#93c5fd');
+    polyP(x, [-18, -4, -11, -17, -2, -17, -2, -4]); pOut(x, col, '#ffffff');
+    polyP(x, [3, -4, 3, -17, 12, -17, 20, -4]); pOut(x, col, '#ffffff');
+    x.beginPath(); rrectPath(x, -44, -4, 88, 22, 7); pOut(x, col, '#60a5fa');
+    for (const a of [-24, 24]) { cP(x, a, 19, 10); pOut(x, col, '#6b7280'); cP(x, a, 19, 4); pOut(x, col, '#e5e7eb'); }
+  },
+  flag: (x, col) => {
+    const lw = x.lineWidth; x.lineWidth = lw * 1.4; ln(x, [-24, 46, -24, -42]); x.lineWidth = lw;
+    x.beginPath(); x.rect(-24, -42, 54, 34); pOut(x, col, '#ffffff');
+    x.fillStyle = col('#374151') === '#ffffff' ? '#9ca3af' : '#374151';
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 5; c++) if ((r + c) % 2 === 0) { x.beginPath(); x.rect(-24 + c * 10.8, -42 + r * 11.33, 10.8, 11.33); x.fill(); }
+    x.beginPath(); x.rect(-24, -42, 54, 34); x.stroke();
+  }
+};
+const PAIRS = [
+  { k: 'rabbit', a: 'rabbit', an: '토끼', b: 'carrot', bn: '당근' },
+  { k: 'puppy', a: 'puppy', an: '강아지', b: 'bone', bn: '뼈다귀' },
+  { k: 'cat', a: 'cat', an: '고양이', b: 'fish', bn: '물고기' },
+  { k: 'mouse', a: 'mouse', an: '생쥐', b: 'cheese', bn: '치즈' },
+  { k: 'bee', a: 'bee', an: '꿀벌', b: 'flower', bn: '꽃' },
+  { k: 'bear', a: 'bear', an: '곰', b: 'honey', bn: '꿀단지' },
+  { k: 'kid', a: 'kid', an: '아이', b: 'house', bn: '집' },
+  { k: 'rocket', a: 'rocket', an: '로켓', b: 'star', bn: '별' },
+  { k: 'car', a: 'car', an: '자동차', b: 'flag', bn: '결승 깃발' }
+];
+const PAIR = Object.fromEntries(PAIRS.map(p => [p.k, p]));
+/* size = 그림 상자 한 변(현재 좌표 단위). 선 굵기는 상자에 맞춰 알아서 */
+function drawIcon(x, k, cx, cy, size, color) {
+  const f = ICONS[k]; if (!f) return;
+  const s = size / 100;
+  x.save(); x.translate(cx, cy); x.scale(s, s);
+  x.lineWidth = 3.4; x.strokeStyle = INK; x.lineJoin = 'round'; x.lineCap = 'round';
+  f(x, color ? (c => c) : (() => '#ffffff'));
+  x.restore();
+}
+function pairSay(p) {
+  if (!p) return '출발에서 도착까지 길을 따라 선을 그어 보세요.';
+  return josa(p.an, ['이', '가']) + ' ' + josa(p.bn, ['을', '를']) + ' 찾아갈 수 있도록 길을 따라 선을 그어 보세요.';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   문제지 — 쪽 나누기·미로 놓기·그리기·PDF
+   · 그리기 함수는 캔버스(미리보기·PNG)와 PDF 펜에 똑같이 쓴다. PDF 펜은 캔버스와 같은 이름의 함수를 받아
+     PDF 그리기 명령으로 바꾼다 — 벽·정답 길·출발/도착 그림이 모두 벡터라 크게 뽑아도 깨지지 않는다
+   · 글자만 기기 글꼴로 그린 투명 조각(한글 글꼴을 싣지 않아도 어디서나 같게)
+   ══════════════════════════════════════════════════════════════ */
+const MARGIN = 12, TILE_K = 16;
+const WALL = '#1f2937', MUTED = '#6b7280', RED = '#e11d48', HEAD = '#2f2a28';
+
+/* ── 난이도 ── 칸 수는 모양마다 따로. 나이는 화면 안내에만 쓰고 종이에는 찍지 않는다(어르신 활동지에 「3~4세」가 찍히지 않게) */
+const LV = [
+  { n: '아주 쉬움', age: '3~4세', grid: 5, theta: 3, hex: 2, pic: 9, text: 14, bias: 1 },
+  { n: '쉬움', age: '5~6세', grid: 8, theta: 5, hex: 3, pic: 14, text: 16, bias: 0.95 },
+  { n: '보통', age: '7세·1학년', grid: 12, theta: 8, hex: 5, pic: 20, text: 18, bias: 0.85 },
+  { n: '조금 어려움', age: '초등 2~3학년', grid: 17, theta: 11, hex: 8, pic: 28, text: 20, bias: 0.8 },
+  { n: '어려움', age: '초등 4~6학년', grid: 24, theta: 16, hex: 11, pic: 38, text: 24, bias: 0.75 },
+  { n: '아주 어려움', age: '어른·끝판왕', grid: 34, theta: 23, hex: 15, pic: 52, text: 28, bias: 0.75 }
+];
+const ROAD = { long: 1, mix: 0.5, branch: 0 };
+const WALLK = { thin: 0.06, normal: 0.09, thick: 0.15 };
+const SHAPE_ENDS = { heart: 'tb', star: 'tb', house: 'tb', tree: 'tb', fish: 'lr', cat: 'tb', bear: 'tb', apple: 'tb', cloud: 'lr', butterfly: 'tb', car: 'lr', dino: 'lr' };
+function endsMode(o) {
+  if (o.ends !== 'auto') return o.shape !== 'theta' && o.ends === 'center' ? 'tb' : o.ends;
+  if (o.shape === 'theta') return 'center';
+  if (o.shape === 'grid') return 'tb';
+  if (o.shape === 'hex' || o.shape === 'text') return 'lr';
+  if (o.shape === 'pic') return SHAPE_ENDS[o.pic] || 'tb';
+  return 'far';
+}
+const biasOf = o => o.road === 'auto' ? LV[o.lv - 1].bias : ROAD[o.road];
+
+/* ── 그래프 만들기(같은 설정이면 다시 쓴다) ── */
+const GCACHE = new Map();
+function cacheGet(map, key, make, lim) {
+  if (map.has(key)) { const v = map.get(key); map.delete(key); map.set(key, v); return v; }
+  const v = make();
+  map.set(key, v);
+  while (map.size > (lim || 24)) map.delete(map.keys().next().value);
+  return v;
+}
+function graphFor(o, aw, ah) {
+  const L = LV[o.lv - 1], d = o.dens;
+  if (o.shape === 'grid') {
+    const C = Math.max(3, Math.round(L.grid * d)), R = Math.max(3, Math.round(C * ah / aw));
+    return cacheGet(GCACHE, 'g|' + C + 'x' + R, () => buildGrid(C, R));
+  }
+  if (o.shape === 'theta') { const n = Math.max(2, Math.round(L.theta * d)); return cacheGet(GCACHE, 't|' + n, () => buildTheta(n)); }
+  if (o.shape === 'hex') { const n = Math.max(2, Math.round(L.hex * d)); return cacheGet(GCACHE, 'h|' + n, () => buildHex(n)); }
+  if (o.shape === 'text') {
+    const cpl = Math.max(7, Math.round(L.text * d)), txt = (o.text || '').trim() || '미로';
+    return cacheGet(GCACHE, 'x|' + txt + '|' + cpl, () => {
+      const A = textAlpha(txt, cpl), m = gridFromAlpha(A.al, A.W, A.H, A.cell);
+      if (!m) throw new Error('글자 모양을 만들지 못했습니다');
+      return maskGraph(connectMask(m, 0));
+    });
+  }
+  const cols = Math.max(5, Math.round(L.pic * d));
+  if (o.shape === 'img') {
+    if (!IMG.img) throw new Error('그림을 먼저 넣어 주세요');
+    return cacheGet(GCACHE, 'i|' + IMG.id + '|' + (o.inv ? 1 : 0) + '|' + cols, () => {
+      const A = imageAlpha(IMG.img, o.inv);
+      const m = gridFromAlpha(A.al, A.W, A.H, bboxW(A.al, A.W, A.H) / cols);
+      if (!m) throw new Error('그림에서 모양을 찾지 못했습니다 · 「모양 뒤집기」를 눌러 보세요');
+      return maskGraph(connectMask(m, 0.02));
+    });
+  }
+  return cacheGet(GCACHE, 'p|' + o.pic + '|' + cols, () => {
+    const A = shapeAlpha(o.pic, 4), m = gridFromAlpha(A.al, A.W, A.H, bboxW(A.al, A.W, A.H) / cols);
+    return maskGraph(connectMask(m, 0.02));
+  });
+}
+function bboxW(al, W, H) {
+  let x0 = W, x1 = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (al[y * W + x] >= 128) { if (x < x0) x0 = x; if (x > x1) x1 = x; }
+  return Math.max(1, x1 - x0 + 1);
+}
+/* 빈 줄·빈 칸을 잘라 낸 뒤 격자로 */
+function maskGraph(m) {
+  let x0 = m.C, y0 = m.R, x1 = -1, y1 = -1;
+  for (let j = 0; j < m.R; j++) for (let i = 0; i < m.C; i++) if (m.mask[j * m.C + i]) { x0 = Math.min(x0, i); x1 = Math.max(x1, i); y0 = Math.min(y0, j); y1 = Math.max(y1, j); }
+  if (x1 < 0) throw new Error('모양이 너무 작습니다');
+  const C = x1 - x0 + 1, R = y1 - y0 + 1, mk = new Uint8Array(C * R);
+  for (let j = 0; j < R; j++) for (let i = 0; i < C; i++) mk[j * C + i] = m.mask[(j + y0) * m.C + i + x0];
+  return buildGrid(C, R, mk);
+}
+
+/* ══ 쪽 나누기 ══ */
+const pageWH = land => land ? [297, 210] : [210, 297];
+function headH(o) { return o.head === 'name' ? 11 : (o.head === 'title' && o.title.trim()) ? 12 : 0; }
+function bodyBox(W, H, o) { const top = MARGIN + headH(o) + (o.per === 1 ? 19 : 11), bot = H - MARGIN - 6; return { x: MARGIN, y: top, w: W - MARGIN * 2, h: bot - top }; }
+function slotsOf(box, per, land) {
+  const gap = 8;
+  if (per === 1) return [box];
+  if (per === 2) {
+    if (!land) { const h = (box.h - gap) / 2; return [{ x: box.x, y: box.y, w: box.w, h }, { x: box.x, y: box.y + h + gap, w: box.w, h }]; }
+    const w = (box.w - gap) / 2; return [{ x: box.x, y: box.y, w, h: box.h }, { x: box.x + w + gap, y: box.y, w, h: box.h }];
+  }
+  const w = (box.w - gap) / 2, h = (box.h - gap) / 2;
+  return [[0, 0], [1, 0], [0, 1], [1, 1]].map(([i, j]) => ({ x: box.x + i * (w + gap), y: box.y + j * (h + gap), w, h }));
+}
+const SLOT_LAB = 6;
+function iconZone(slot, lv) { return clamp(Math.min(slot.w, slot.h) * (lv <= 1 ? 0.17 : lv === 2 ? 0.15 : 0.13), 9, 30); }
+function sidesFor(mode) {
+  if (mode === 'tb') return { t: 1, b: 1, l: 0, r: 0 };
+  if (mode === 'lr') return { t: 0, b: 0, l: 1, r: 1 };
+  if (mode === 'center') return { t: 1, b: 0, l: 0, r: 0 };
+  return { t: 1, b: 1, l: 1, r: 1 };
+}
+function areaOf(slot, sides, Iz, per) {
+  const lab = per > 1 ? SLOT_LAB : 0;
+  const x = slot.x + (sides.l ? Iz : 0), y = slot.y + lab + (sides.t ? Iz : 0);
+  return { x, y, w: slot.w - (sides.l ? Iz : 0) - (sides.r ? Iz : 0), h: slot.h - lab - (sides.t ? Iz : 0) - (sides.b ? Iz : 0) };
+}
+function fitIn(G, A) {
+  const b = G.bounds, bw = b.x1 - b.x0, bh = b.y1 - b.y0, s = Math.min(A.w / bw, A.h / bh);
+  const ox = A.x + (A.w - bw * s) / 2 - b.x0 * s, oy = A.y + (A.h - bh * s) / 2 - b.y0 * s;
+  return { s, ox, oy, box: { x: ox + b.x0 * s, y: oy + b.y0 * s, w: bw * s, h: bh * s } };
+}
+const sideOf = e => e.e < 0 ? '' : Math.abs(e.nx) >= Math.abs(e.ny) ? (e.nx > 0 ? 'r' : 'l') : (e.ny > 0 ? 'b' : 't');
+/* 종이 방향 — 자동이면 미로 모양에 맞춘다(네모 격자는 세로, 한 장에 둘이면 가로) */
+function landOf(o) {
+  if (o.paper === 'land') return true;
+  if (o.paper === 'port') return false;
+  if (o.shape === 'grid') return o.per === 2;   /* 한 장에 둘이면 가로로 나란히 — 반쪽이 세로로 길어 네모 미로가 납작해지지 않는다 */
+  let G;
+  try { G = graphFor(o, 1, 1); } catch (e) { return false; }
+  const b = G.bounds, a = (b.x1 - b.x0) / (b.y1 - b.y0);
+  const sc = land => {
+    const [W, H] = pageWH(land), sl = slotsOf(bodyBox(W, H, o), o.per, land)[0], Iz = iconZone(sl);
+    const A = areaOf(sl, sidesFor(endsMode(o)), Iz, o.per);
+    return Math.min(A.w / a, A.h);
+  };
+  return sc(true) > sc(false) * 1.04;
+}
+/* 섞어서 — 목록 안에서는 차례대로 돌려 이웃한 미로끼리 그림이 겹치지 않게, 시작 자리만 첫 씨앗으로 정한다 */
+const seedHash = s => (Math.imul(s ^ (s >>> 15), 0x2c1b3c6d) >>> 0);
+function pairOfMaze(o, mz) {
+  if (o.pair === 'none') return null;
+  if (o.pair !== 'mix') return PAIR[o.pair] || PAIRS[0];
+  const i = typeof MAZES !== 'undefined' ? MAZES.indexOf(mz) : -1;
+  return PAIRS[(i >= 0 ? seedHash(MAZES[0].seed) + i : seedHash(mz.seed)) % PAIRS.length];
+}
+/* 미로 하나 = 그래프 + 길 + 종이 위 자리. 같은 설정·씨앗이면 다시 쓴다 */
+const MCACHE = new Map();
+function layoutKey(o, land) { return [o.shape, o.pic, o.text, o.lv, o.dens, o.road, o.ends, o.per, land ? 1 : 0, o.head, headH(o), o.shape === 'img' ? IMG.id + '|' + (o.inv ? 1 : 0) : ''].join('|'); }
+function mazeAt(o, mz, slot, land) {
+  return cacheGet(MCACHE, layoutKey(o, land) + '|' + mz.seed + '|' + slot.w.toFixed(1) + 'x' + slot.h.toFixed(1), () => {
+    const mode = endsMode(o), Iz = iconZone(slot, o.lv), guess = sidesFor(mode), A0 = areaOf(slot, guess, Iz, o.per);
+    const G = graphFor(o, A0.w, A0.h);
+    const M = makeMaze(G, mz.seed, biasOf(o), mode);
+    const real = { t: 0, b: 0, l: 0, r: 0 };
+    for (const e of [M.s, M.g]) { const sd = sideOf(e); if (sd) real[sd] = 1; }
+    if (mode === 'center') real.t = 1;
+    const sides = o.shape === 'grid' ? guess : real;
+    return { M, sides, Iz, rel: fitIn(G, areaOf({ x: 0, y: 0, w: slot.w, h: slot.h }, sides, Iz, o.per)) };
+  }, 40);
+}
+/* 쪽 목록 — 문제 쪽마다 미로 per 개, 정답 쪽도 같은 배치 */
+function planDoc(o, mazes) {
+  const land = landOf(o), [W, H] = pageWH(land), slots = slotsOf(bodyBox(W, H, o), o.per, land);
+  const qs = [];
+  for (let i = 0; i < mazes.length; i += o.per) qs.push(mazes.slice(i, i + o.per).map((mz, j) => i + j));
+  let sheets = qs.map((idx, p) => ({ kind: 'q', idx, qp: p }));
+  if (o.ans === 'end') sheets = sheets.concat(qs.map((idx, p) => ({ kind: 'a', idx, qp: p })));
+  else if (o.ans === 'each') sheets = qs.flatMap((idx, p) => [{ kind: 'q', idx, qp: p }, { kind: 'a', idx, qp: p }]);
+  const ansPage = new Map();
+  sheets.forEach((s, i) => { if (s.kind === 'a') ansPage.set(s.qp, i + 1); });
+  return { land, W, H, slots, sheets, ansPage, qCount: qs.length };
+}
+
+/* ══ 그리기 ══ g = 캔버스 2D 또는 PdfG, 단위는 mm */
+const mctx = document.createElement('canvas').getContext('2d');
+const wCache = new Map();
+function fontStr(px, b) { return (b ? '700 ' : '400 ') + px + 'px ' + FONT; }
+function textW(s, sz, b) {
+  const k = (b ? 1 : 0) + '|' + s;
+  let w = wCache.get(k);
+  if (w == null) { mctx.font = fontStr(100, b); w = mctx.measureText(s).width / 100; wCache.set(k, w); }
+  return w * sz;
+}
+function T(g, s, x, y, sz, b, c, a) {
+  if (!s) return;
+  if (g.isPdf) { g.text(s, x, y, sz, b, c, a); return; }
+  g.font = fontStr(sz, b); g.fillStyle = c; g.textBaseline = 'alphabetic';
+  g.textAlign = a === 'c' ? 'center' : a === 'r' ? 'right' : 'left';
+  g.fillText(s, x, y);
+}
+function fitText(s, wmm, sz, b) {
+  if (textW(s, sz, b) <= wmm) return s;
+  let t = s;
+  while (t.length > 2 && textW(t + '…', sz, b) > wmm) t = t.slice(0, -1);
+  return t + '…';
+}
+const stars = lv => '★'.repeat(lv) + '☆'.repeat(6 - lv);
+function wallMM(s, o) { return clamp(s * WALLK[o.wall], 0.3, o.wall === 'thick' ? 2.6 : 1.8); }
+
+/* 미로 하나 — P 는 종이 위 자리(s mm/칸, ox·oy), user 는 화면에서 풀 때 그은 길 */
+function drawMaze(g, o, Z, P, pair, answer, user) {
+  const M = Z.M, G = M.G;
+  g.save(); g.translate(P.ox, P.oy); g.scale(P.s, P.s);
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  const tracePts = pts => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); };
+  if (answer) {
+    g.strokeStyle = RED; g.lineWidth = Math.max(0.6 / P.s, 0.3);
+    tracePts(pathPoints(M)); g.stroke();
+  }
+  if (user && user.cells.length) {
+    g.strokeStyle = user.done ? '#16a34a' : '#7c3aed'; g.lineWidth = 0.36;
+    const pts = pathPoints(M, user.cells);
+    if (M.s.e >= 0) pts.unshift(segMid(G.E[M.s.e]));
+    if (user.done && M.g.e >= 0) pts.push(segMid(G.E[M.g.e]));
+    tracePts(pts); g.stroke();
+  }
+  /* 안쪽 벽 → 바깥 테두리(더 굵게 — 하트·글자 모양이 또렷이 보이게) */
+  const lw = wallMM(P.s, o);
+  g.strokeStyle = WALL; g.lineWidth = lw / P.s;
+  g.beginPath(); for (const ch of wallChains(M, false)) traceChain(g, G, ch); g.stroke();
+  g.lineWidth = Math.min(lw * 1.7, lw + 1.2) / P.s;
+  g.beginPath(); for (const ch of wallChains(M, true)) traceChain(g, G, ch); g.stroke();
+  g.restore();
+  /* 출발·도착 그림 — 입구 바깥, 미로 상자 밖으로 밀어서 놓는다 */
+  for (const [end, which] of [[M.s, 'a'], [M.g, 'b']]) {
+    const sp = iconSpot(Z, P, end);
+    if (sp.lead) {
+      g.save(); g.strokeStyle = '#9ca3af'; g.lineWidth = 0.35; g.setLineDash([0.9, 1.1]);
+      g.beginPath(); g.moveTo(sp.ax, sp.ay); g.lineTo(sp.lx, sp.ly); g.stroke(); g.restore();
+    }
+    if (pair) drawIcon(g, which === 'a' ? pair.a : pair.b, sp.x, sp.y, sp.size, o.color === 'color');
+    else badge(g, which === 'a' ? '출발' : '도착', sp.x, sp.y, sp.size, which === 'a');
+  }
+}
+function badge(g, s, cx, cy, size, start) {
+  const w = size * 1.05, h = size * 0.52, sz = h * 0.56;
+  g.save();
+  g.beginPath(); rrectPath(g, cx - w / 2, cy - h / 2, w, h, h / 2);
+  g.fillStyle = start ? '#ede9fe' : '#fee2e2'; g.fill();
+  g.strokeStyle = start ? '#6d28d9' : RED; g.lineWidth = 0.45; g.stroke();
+  g.restore();
+  T(g, s, cx, cy + sz * 0.36, sz, 1, start ? '#5b21b6' : '#be123c', 'c');
+}
+function iconSpot(Z, P, end) {
+  const size = Z.Iz * 0.9;
+  if (end.e < 0) return { x: P.ox, y: P.oy, size: Math.min(size, 2 * TH_C0 * P.s * 0.82) };
+  const ax = P.ox + end.mx * P.s, ay = P.oy + end.my * P.s, sd = sideOf(end), half = size / 2 + 1.4, B = P.box;
+  let x = ax, y = ay;
+  if (sd === 'r') x = Math.max(ax + half, B.x + B.w + half);
+  if (sd === 'l') x = Math.min(ax - half, B.x - half);
+  if (sd === 'b') y = Math.max(ay + half, B.y + B.h + half);
+  if (sd === 't') y = Math.min(ay - half, B.y - half);
+  const S = P.slot;
+  if (S) { x = clamp(x, S.x + size / 2, S.x + S.w - size / 2); y = clamp(y, S.y + size / 2, S.y + S.h - size / 2); }
+  /* 그림이 입구에서 멀어졌으면 점선으로 잇는다 */
+  const lx = sd === 'r' ? x - size / 2 : sd === 'l' ? x + size / 2 : x, ly = sd === 'b' ? y - size / 2 : sd === 't' ? y + size / 2 : y;
+  const lead = Math.hypot(lx - ax, ly - ay) > 3 ? true : false;
+  return { x, y, size, ax, ay, lx, ly, lead };
+}
+/* 종이 위 자리 — 상대 자리(rel)를 칸(slot)만큼 옮긴다 */
+function placeIn(Z, slot) { const r = Z.rel; return { s: r.s, ox: r.ox + slot.x, oy: r.oy + slot.y, box: { x: r.box.x + slot.x, y: r.box.y + slot.y, w: r.box.w, h: r.box.h }, slot }; }
+
+function drawSheet(g, o, doc, sh, mazes, total) {
+  const W = doc.W, H = doc.H, ans = sh.kind === 'a';
+  g.save();
+  g.fillStyle = '#ffffff'; g.beginPath(); g.rect(0, 0, W, H); g.fill();
+  g.restore();
+  let y = MARGIN;
+  if (o.head === 'name') {
+    T(g, '이름', W - MARGIN - 112, y + 6, 4.2, 1, HEAD, 'l');
+    hline(g, W - MARGIN - 101, W - MARGIN - 54, y + 7);
+    T(g, '날짜', W - MARGIN - 48, y + 6, 4.2, 1, HEAD, 'l');
+    hline(g, W - MARGIN - 37, W - MARGIN, y + 7);
+    y += 11;
+  } else if (o.head === 'title' && o.title.trim()) {
+    T(g, fitText(o.title.trim(), W - MARGIN * 2, 6.4, 1), W / 2, y + 7, 6.4, 1, HEAD, 'c');
+    y += 12;
+  }
+  const first = sh.idx[0] + 1, last = sh.idx[sh.idx.length - 1] + 1;
+  T(g, ans ? '미로찾기 정답' : '미로찾기', MARGIN, y + 7.2, 7, 1, ans ? RED : HEAD, 'l');
+  const no = total > 1 ? (first === last ? first + '번' : first + '~' + last + '번') + '  ·  ' : '';
+  T(g, no + '난이도 ' + stars(o.lv), W - MARGIN, y + 7.2, 4.2, 1, MUTED, 'r');
+  if (o.per === 1) {
+    const mz = mazes[sh.idx[0]], pr = pairOfMaze(o, mz);
+    T(g, fitText(ans ? '빨간 선이 길이에요.' : pairSay(pr), W - MARGIN * 2, 4.2, 0), MARGIN, y + 14.2, 4.2, 0, MUTED, 'l');
+  }
+  sh.idx.forEach((mi, j) => {
+    const slot = doc.slots[j], mz = mazes[mi], pr = pairOfMaze(o, mz);
+    const Z = mazeAt(o, mz, slot, doc.land), P = placeIn(Z, slot);
+    if (o.per > 1) {
+      const lab = (mi + 1) + '.  ' + (ans ? '정답' : pr ? josa(pr.an, ['이', '가']) + ' ' + josa(pr.bn, ['을', '를']) + ' 찾아가요' : '출발에서 도착까지');
+      T(g, fitText(lab, slot.w, 3.8, 1), slot.x, slot.y + 4, 3.8, 1, ans ? RED : HEAD, 'l');
+    }
+    drawMaze(g, o, Z, P, pr, ans, null);
+  });
+  if (!ans) {
+    const ap = doc.ansPage.get(sh.qp);
+    if (ap) T(g, '정답은 ' + ap + '쪽에 있어요', W - MARGIN, H - MARGIN + 1.5, 3.4, 0, MUTED, 'r');
+  }
+}
+function hline(g, x1, x2, y) { g.save(); g.strokeStyle = HEAD; g.lineWidth = 0.3; g.beginPath(); g.moveTo(x1, y); g.lineTo(x2, y); g.stroke(); g.restore(); }
+/* 캔버스로 한 쪽 — k = 1mm 당 픽셀 */
+function renderSheet(cv, o, doc, sh, mazes, k) {
+  const x = cv.getContext('2d');
+  x.setTransform(k, 0, 0, k, 0, 0);
+  drawSheet(x, o, doc, sh, mazes, mazes.length);
+  x.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+/* ══ PDF 펜 ══ 캔버스 2D 와 같은 이름으로 받아 PDF 명령을 쌓는다(mm → pt, 위아래 뒤집기) */
+const nf = v => { const x = Math.round(v * 100) / 100; return String(x === 0 ? 0 : x); };
+function rgbS(h) { const [r, g, b] = hex2rgb(h); return (r / 255).toFixed(3) + ' ' + (g / 255).toFixed(3) + ' ' + (b / 255).toFixed(3); }
+class PdfG {
+  constructor(H) {
+    this.isPdf = true; this.H = H; this.ops = []; this.m = [1, 0, 0, 1, 0, 0]; this.st = [];
+    this.fillStyle = '#000000'; this.strokeStyle = '#000000'; this.lineWidth = 1; this.lineCap = 'butt'; this.lineJoin = 'miter'; this.dash = [];
+    this.p = []; this.has = false; this.cx = 0; this.cy = 0; this.sx = 0; this.sy = 0;
+  }
+  save() { this.st.push([this.m.slice(), this.fillStyle, this.strokeStyle, this.lineWidth, this.lineCap, this.lineJoin, this.dash.slice()]); }
+  restore() { const s = this.st.pop(); if (s) [this.m, this.fillStyle, this.strokeStyle, this.lineWidth, this.lineCap, this.lineJoin, this.dash] = s; }
+  transform(a, b, c, d, e, f) { const m = this.m; this.m = [m[0] * a + m[2] * b, m[1] * a + m[3] * b, m[0] * c + m[2] * d, m[1] * c + m[3] * d, m[0] * e + m[2] * f + m[4], m[1] * e + m[3] * f + m[5]]; }
+  translate(x, y) { this.transform(1, 0, 0, 1, x, y); }
+  scale(a, b) { this.transform(a, 0, 0, b === undefined ? a : b, 0, 0); }
+  rotate(t) { const c = Math.cos(t), s = Math.sin(t); this.transform(c, s, -s, c, 0, 0); }
+  setLineDash(a) { this.dash = (a || []).slice(); }
+  pt(x, y) { const m = this.m; return [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]; }
+  P(x, y) { const q = this.pt(x, y); return nf(q[0] * PT) + ' ' + nf((this.H - q[1]) * PT); }
+  get k() { const m = this.m; return Math.sqrt(Math.abs(m[0] * m[3] - m[1] * m[2])); }
+  beginPath() { this.p = []; this.has = false; }
+  moveTo(x, y) { this.p.push(this.P(x, y) + ' m'); this.cx = this.sx = x; this.cy = this.sy = y; this.has = true; }
+  lineTo(x, y) { if (!this.has) { this.moveTo(x, y); return; } this.p.push(this.P(x, y) + ' l'); this.cx = x; this.cy = y; }
+  bezierCurveTo(a, b, c, d, x, y) { if (!this.has) this.moveTo(a, b); this.p.push(this.P(a, b) + ' ' + this.P(c, d) + ' ' + this.P(x, y) + ' c'); this.cx = x; this.cy = y; }
+  quadraticCurveTo(qx, qy, x, y) { const x0 = this.cx, y0 = this.cy; this.bezierCurveTo(x0 + 2 / 3 * (qx - x0), y0 + 2 / 3 * (qy - y0), x + 2 / 3 * (qx - x), y + 2 / 3 * (qy - y), x, y); }
+  closePath() { if (this.has) { this.p.push('h'); this.cx = this.sx; this.cy = this.sy; } }
+  rect(x, y, w, h) { this.moveTo(x, y); this.lineTo(x + w, y); this.lineTo(x + w, y + h); this.lineTo(x, y + h); this.closePath(); }
+  arc(x, y, r, a0, a1, ccw) { this.ellipse(x, y, r, r, 0, a0, a1, ccw); }
+  ellipse(x, y, rx, ry, rot, a0, a1, ccw) {
+    const TAU = Math.PI * 2;
+    let sw = ccw ? a0 - a1 : a1 - a0;
+    if (sw >= TAU) sw = TAU; else { sw %= TAU; if (sw < 0) sw += TAU; }
+    if (ccw) sw = -sw;
+    const cr = Math.cos(rot || 0), sr = Math.sin(rot || 0);
+    const at = t => [x + rx * Math.cos(t) * cr - ry * Math.sin(t) * sr, y + rx * Math.cos(t) * sr + ry * Math.sin(t) * cr];
+    const dv = t => [-rx * Math.sin(t) * cr - ry * Math.cos(t) * sr, -rx * Math.sin(t) * sr + ry * Math.cos(t) * cr];
+    const p0 = at(a0);
+    if (this.has) this.lineTo(p0[0], p0[1]); else this.moveTo(p0[0], p0[1]);
+    if (Math.abs(sw) < 1e-9) return;
+    const n = Math.max(1, Math.ceil(Math.abs(sw) / (Math.PI / 2) - 1e-9)), d = sw / n, kk = 4 / 3 * Math.tan(d / 4);
+    let t = a0;
+    for (let i = 0; i < n; i++) {
+      const t1 = t + d, P0 = at(t), P1 = at(t1), D0 = dv(t), D1 = dv(t1);
+      this.bezierCurveTo(P0[0] + kk * D0[0], P0[1] + kk * D0[1], P1[0] - kk * D1[0], P1[1] - kk * D1[1], P1[0], P1[1]);
+      t = t1;
+    }
+  }
+  fill() { if (this.p.length) this.ops.push(rgbS(this.fillStyle) + ' rg\n' + this.p.join(' ') + ' f\n'); }
+  stroke() {
+    if (!this.p.length) return;
+    const lw = this.lineWidth * this.k * PT, cap = { butt: 0, round: 1, square: 2 }[this.lineCap] || 0, join = { miter: 0, round: 1, bevel: 2 }[this.lineJoin] || 0;
+    const dash = this.dash.length ? '[' + this.dash.map(v => nf(v * this.k * PT)).join(' ') + '] 0 d ' : '[] 0 d ';
+    this.ops.push(nf(lw) + ' w ' + cap + ' J ' + join + ' j ' + dash + rgbS(this.strokeStyle) + ' RG\n' + this.p.join(' ') + ' S\n');
+  }
+  text(s, x, y, sz, b, c, a) { const q = this.pt(x, y); this.ops.push({ s, x: q[0], y: q[1], sz: sz * this.k, b: b ? 1 : 0, c, a }); }
+}
+
+/* ══ PDF 파일 ══ */
+const te8 = new TextEncoder();
+async function zlib(u8) {
+  if (typeof CompressionStream === 'undefined') return null;
+  try {
+    const st = new Blob([u8]).stream().pipeThrough(new CompressionStream('deflate'));
+    return new Uint8Array(await new Response(st).arrayBuffer());
+  } catch (e) { return null; }
+}
+function catU8(arrs) {
+  let n = 0; for (const a of arrs) n += a.length;
+  const out = new Uint8Array(n); let o = 0;
+  for (const a of arrs) { out.set(a, o); o += a.length; }
+  return out;
+}
+class PdfW {
+  constructor() { this.o = []; }
+  alloc() { this.o.push(null); return this.o.length; }
+  put(n, s) { this.o[n - 1] = te8.encode(s); }
+  async stream(n, dict, data) {
+    const u = typeof data === 'string' ? te8.encode(data) : data;
+    let body = u, filt = '';
+    if (u.length > 80) { const z = await zlib(u); if (z && z.length < u.length) { body = z; filt = ' /Filter /FlateDecode'; } }
+    this.o[n - 1] = catU8([te8.encode('<< ' + dict + filt + ' /Length ' + body.length + ' >>\nstream\n'), body, te8.encode('\nendstream')]);
+  }
+  blob(root, info) {
+    const head = catU8([te8.encode('%PDF-1.5\n'), new Uint8Array([37, 226, 227, 207, 211, 10])]);
+    const parts = [head], offs = [];
+    let len = head.length;
+    this.o.forEach((b, i) => {
+      offs[i] = len;
+      const h = te8.encode((i + 1) + ' 0 obj\n'), t = te8.encode('\nendobj\n');
+      parts.push(h, b, t); len += h.length + b.length + t.length;
+    });
+    let x = 'xref\n0 ' + (this.o.length + 1) + '\n0000000000 65535 f \n';
+    for (const off of offs) x += String(off).padStart(10, '0') + ' 00000 n \n';
+    x += 'trailer\n<< /Size ' + (this.o.length + 1) + ' /Root ' + root + ' 0 R /Info ' + info + ' 0 R >>\nstartxref\n' + len + '\n%%EOF\n';
+    parts.push(te8.encode(x));
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+}
+function pdfStr(s) {
+  let h = 'FEFF';
+  for (const ch of s) {
+    const c = ch.codePointAt(0);
+    if (c > 0xffff) { const v = c - 0x10000; h += (0xd800 + (v >> 10)).toString(16).padStart(4, '0') + (0xdc00 + (v & 1023)).toString(16).padStart(4, '0'); }
+    else h += c.toString(16).padStart(4, '0');
+  }
+  return '<' + h.toUpperCase() + '>';
+}
+const metCache = {};
+function fmet(b) {
+  const k = b ? 'b' : 'r';
+  if (metCache[k]) return metCache[k];
+  mctx.font = fontStr(100, b);
+  const m = mctx.measureText('가Hgy');
+  return (metCache[k] = { asc: (m.fontBoundingBoxAscent || 95) / 100, desc: (m.fontBoundingBoxDescent || 25) / 100 });
+}
+const tkey = p => p.b + '|' + p.sz.toFixed(2) + '|' + p.c + '|' + p.s;
+async function makeTiles(pdf, pages, prog) {
+  const want = new Map();
+  for (const ops of pages) for (const p of ops) if (typeof p !== 'string') { const k = tkey(p); if (!want.has(k)) want.set(k, p); }
+  const cv = document.createElement('canvas'), ctx = cv.getContext('2d', { willReadFrequently: true });
+  const out = new Map();
+  let i = 0;
+  for (const [k, p] of want) {
+    const m = fmet(p.b), wmm = textW(p.s, p.sz, p.b), pad = 3, asc = m.asc * p.sz * TILE_K;
+    const W = Math.max(2, Math.ceil(wmm * TILE_K) + pad * 2), H = Math.max(2, Math.ceil((m.asc + m.desc) * p.sz * TILE_K) + pad * 2);
+    cv.width = W; cv.height = H;
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = fontStr(p.sz * TILE_K, p.b); ctx.fillStyle = '#000'; ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+    ctx.fillText(p.s, pad, pad + asc);
+    const d = ctx.getImageData(0, 0, W, H).data, a = new Uint8Array(W * H), rgb = new Uint8Array(W * H * 3), [r, g, b] = hex2rgb(p.c);
+    for (let j = 0; j < a.length; j++) { a[j] = d[j * 4 + 3]; rgb[j * 3] = r; rgb[j * 3 + 1] = g; rgb[j * 3 + 2] = b; }
+    const sm = pdf.alloc(), im = pdf.alloc();
+    await pdf.stream(sm, '/Type /XObject /Subtype /Image /Width ' + W + ' /Height ' + H + ' /ColorSpace /DeviceGray /BitsPerComponent 8', a);
+    await pdf.stream(im, '/Type /XObject /Subtype /Image /Width ' + W + ' /Height ' + H + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /SMask ' + sm + ' 0 R', rgb);
+    out.set(k, { name: 'T' + i, n: im, W, H, wmm, offX: -pad / TILE_K, offTop: -(pad + asc) / TILE_K });
+    i++;
+    if (i % 30 === 0) { if (prog) prog('글자 ' + i + ' / ' + want.size); await sleep0(); }
+  }
+  cv.width = cv.height = 1;
+  return out;
+}
+async function makePdf(o, doc, mazes, title, prog) {
+  const pages = [];
+  for (let i = 0; i < doc.sheets.length; i++) {
+    const g = new PdfG(doc.H);
+    drawSheet(g, o, doc, doc.sheets[i], mazes, mazes.length);
+    pages.push(g.ops);
+    if (prog && i % 2 === 1) { prog('쪽 ' + (i + 1) + ' / ' + doc.sheets.length); await sleep0(); }
+  }
+  const pdf = new PdfW();
+  const cat = pdf.alloc(), pagesN = pdf.alloc(), infoN = pdf.alloc();
+  const tiles = await makeTiles(pdf, pages, prog);
+  const kids = [];
+  for (let si = 0; si < pages.length; si++) {
+    const xo = new Map(), X = v => nf(v * PT), Y = v => nf((doc.H - v) * PT);
+    let s = '1 J 1 j\n';
+    for (const p of pages[si]) {
+      if (typeof p === 'string') { s += p; continue; }
+      const t = tiles.get(tkey(p)); if (!t) continue;
+      xo.set(t.name, t.n);
+      const xl = p.a === 'c' ? p.x - t.wmm / 2 : p.a === 'r' ? p.x - t.wmm : p.x;
+      const bw = t.W / TILE_K, bh = t.H / TILE_K, top = p.y + t.offTop;
+      s += 'q ' + nf(bw * PT) + ' 0 0 ' + nf(bh * PT) + ' ' + X(xl + t.offX) + ' ' + Y(top + bh) + ' cm /' + t.name + ' Do Q\n';
+    }
+    const cN = pdf.alloc(), pN = pdf.alloc();
+    await pdf.stream(cN, '', s);
+    const xs = [...xo].map(([nm, n]) => '/' + nm + ' ' + n + ' 0 R').join(' ');
+    pdf.put(pN, '<< /Type /Page /Parent ' + pagesN + ' 0 R /MediaBox [0 0 ' + nf(doc.W * PT) + ' ' + nf(doc.H * PT) + '] /Resources << /XObject << ' + xs + ' >> >> /Contents ' + cN + ' 0 R >>');
+    kids.push(pN);
+    if (prog && si % 4 === 3) { prog('쪽 ' + (si + 1) + ' / ' + pages.length); await sleep0(); }
+  }
+  pdf.put(pagesN, '<< /Type /Pages /Kids [' + kids.map(n => n + ' 0 R').join(' ') + '] /Count ' + kids.length + ' >>');
+  pdf.put(cat, '<< /Type /Catalog /Pages ' + pagesN + ' 0 R /ViewerPreferences << /PrintScaling /None >> >>');
+  pdf.put(infoN, '<< /Title ' + pdfStr(title) + ' /Creator (maze_maker) /Producer (maze_maker) >>');
+  return { blob: pdf.blob(cat, infoN), pages: kids.length };
+}
+
+/* ════════════════════════════════════════════════════════════
+   앱 안 브라우저(네이버·카카오톡 등) — 파일 내려받기가 막혀 있다
+     ① 앱 안에서 열리면 사용을 막는 창을 띄워 브라우저를 옮기게 한다
+     ② 그래도 저장을 누르면 blob: 대신 data: 주소로 시도한다(10MB 까지)
+     ③ 아이폰은 사파리를 강제로 열 수 없어 주소 복사 + 메뉴 안내로 간다
+   ════════════════════════════════════════════════════════════ */
+const UA = navigator.userAgent || '';
+const IA = {
+  naver: /NAVER\(inapp/i.test(UA),
+  kakao: /KAKAOTALK/i.test(UA),
+  line: /\bLine\//i.test(UA),
+  ios: /iPhone|iPad|iPod/i.test(UA),
+  android: /Android/i.test(UA)
+};
+IA.on = IA.naver || IA.kakao || IA.line ||
+  /Instagram|FBAN|FBAV|FB_IAB|DaumApps|everytimeApp|band\/|KAKAOSTORY/i.test(UA) ||
+  (IA.android && /;\s*wv\)/i.test(UA));   /* 안드로이드 WebView 표시 */
+const IA_MAX = 10 * 1048576;               /* data: 주소는 base64 라 4/3 배로 커진다 — 그 이상은 막는다 */
+
+function externalUrl() {
+  const url = location.href;
+  if (IA.kakao) return 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+  if (IA.line) return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'openExternalBrowser=1';
+  if (IA.android) return 'intent://' + url.replace(/^https?:\/\//i, '') +
+    '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+  return '';          /* 아이폰은 사파리를 강제로 열 수 없다 */
+}
+function copyAddr(guide) {
+  const url = location.href;
+  const done = () => toast(guide ? '주소를 복사했습니다. 사파리를 열고 붙여 넣거나, 메뉴에서 「다른 브라우저로 열기」를 누르세요.' : '주소를 복사했습니다.', 5200);
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(url).then(done, () => fallbackCopy(url, done)); return; }
+  } catch (e) { /* 아래로 */ }
+  fallbackCopy(url, done);
+}
+function fallbackCopy(text, done) {
+  const t = document.createElement('textarea');
+  t.value = text; t.setAttribute('readonly', ''); t.style.cssText = 'position:fixed;left:-9999px;top:0';
+  document.body.appendChild(t); t.select(); t.setSelectionRange(0, text.length);
+  try { document.execCommand('copy'); done(); } catch (e) { toast('주소를 길게 눌러 복사해 주세요.', 4200); }
+  t.remove();
+}
+/* 저장은 전부 이 한 곳을 거친다. 막혔으면 false */
+function download(blob, name) {
+  if (IA.on) return downloadInApp(blob, name);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+  return true;
+}
+function downloadInApp(blob, name) {
+  if (blob.size > IA_MAX) {
+    toast('앱 안에서는 10MB가 넘는 파일을 저장할 수 없습니다. 위쪽 「' + $('iaGo').textContent + '」를 눌러 주세요.', 5600);
+    return false;
+  }
+  const go = href => {
+    const a = document.createElement('a');
+    a.href = href; a.download = name; a.rel = 'noopener';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  const fr = new FileReader();
+  fr.onload = () => { try { go(fr.result); } catch (e) { /* 안내로 넘어간다 */ } };
+  fr.onerror = () => toast('앱 안에서는 저장이 막혀 있습니다. 위쪽 「' + $('iaGo').textContent + '」를 눌러 주세요.', 5200);
+  fr.readAsDataURL(blob);
+  return true;
+}
+
+function initInApp() {
+  if (!IA.on) return;
+  const app = IA.naver ? (/NAVER\(inapp;\s*blog/i.test(UA) ? '네이버 블로그 앱' : '네이버 앱') : IA.kakao ? '카카오톡' : IA.line ? '라인' : '앱';
+  const copyOnly = IA.ios && !IA.kakao && !IA.line;
+  const chromeIntent = IA.android && !IA.kakao && !IA.line;
+  document.body.classList.add('inapp');
+  $('iaMsg').textContent = app + ' 안에서는 미로 문제지 PDF·그림 저장이 안 됩니다.';
+  $('doneInapp').classList.remove('hide');
+  $('iaDesc').innerHTML = '<b>' + app + '</b> 안에서 열렸습니다. 이 화면에서는 ' +
+    '<b>만든 미로 문제지(PDF·PNG)를 내려받을 수 없습니다.</b> 모양과 난이도를 다 골라도 저장이 안 되니 ' +
+    '<b>시작하기 전에</b> 브라우저를 옮겨 주세요. 인쇄 창도 대개 뜨지 않습니다.';
+  const steps = copyOnly
+    ? ['아래 <b>주소 복사</b>를 누르세요.',
+       '오른쪽 아래 <b>메뉴</b>에서 「다른 브라우저로 열기」를 누르거나, <b>사파리</b> 주소창에 붙여 넣으세요.']
+    : chromeIntent
+      ? ['아래 <b>크롬에서 열기</b>를 누르세요.',
+         '크롬이 없으면 오른쪽 위 <b>메뉴</b>에서 「다른 브라우저로 열기」를 누르세요.']
+      : ['아래 <b>다른 브라우저로 열기</b>를 누르세요.',
+         '열리지 않으면 ' + (IA.ios ? '화면의' : '오른쪽 위') + ' <b>메뉴</b>에서 「다른 브라우저로 열기」를 누르세요.'];
+  $('iaSteps').innerHTML = steps.map(t => '<li>' + t + '</li>').join('');
+  const label = copyOnly ? '주소 복사' : chromeIntent ? '크롬에서 열기' : '다른 브라우저로 열기';
+  $('iaGo').textContent = label; $('iaGo2').textContent = label; $('doneGo').textContent = label;
+  $('iaSub').textContent = copyOnly
+    ? '사파리에 붙여 넣거나, 오른쪽 아래 메뉴에서 「다른 브라우저로 열기」를 누르세요.'
+    : '크롬·기본 브라우저에서 열면 바로 저장됩니다.';
+  let hidden = false;
+  try { hidden = sessionStorage.getItem('maze_maker.iahide') === '1'; } catch (e) { /* 무시 */ }
+  if (hidden) document.body.classList.remove('inapp');
+  lockInApp(true);
+}
+function lockInApp(on) {
+  document.body.classList.toggle('ia-lock', on);
+  const w = document.querySelector('.wrap');
+  if (on) w.setAttribute('inert', ''); else w.removeAttribute('inert');
+  if (!on) $('iaModal').blur();
+}
+function iaCopied() {
+  $('iaDesc').innerHTML = '주소를 <b>복사했습니다.</b> 이제 <b>사파리</b>를 열고 주소창에 붙여 넣으세요.';
+  $('iaSteps').innerHTML = '<li>홈 화면에서 <b>사파리</b>를 엽니다.</li>' +
+    '<li>주소창을 길게 눌러 <b>붙여넣기</b> 하세요.</li>' +
+    '<li>또는 이 화면의 <b>메뉴</b> → 「다른 브라우저로 열기」.</li>';
+}
+const locked = () => document.body.classList.contains('ia-lock');
+
+/* ════════════════════════════════════════════════════════════
+   광고 (카카오 애드핏) — 자리는 여기 한 곳에서만 만든다
+   · 한 화면 4곳까지 (애드핏 운영정책: 한 페이지 4개 초과 게재 금지)
+     모바일 ① 맨 위 320×50 ② 본문 320×100 ③ 저장 완료 카드 300×250 ④ 하단 오버형 320×50
+     PC     ① 맨 위 320×50 ② 옆 칸 맨 위 320×50 ③ 옆 칸 맨 아래 320×100 ④ 저장 완료 카드 300×250
+   · ins 는 자리마다 미리 만들어 두고 ba.min.js 는 맨 끝에 한 번만 부른다 —
+     애드핏 로더는 자기가 뜰 때 있는 ins 만 읽어서, 뒤늦게 넣은 ins 는 빈 채로 남는다
+   · 모양·설정을 고르는 중, 미리보기·풀기 중에는 오버형을 내려 둔다(핵심 행동 중 광고 노출 금지 · 단추 옆 오클릭 방지)
+   · 저장 완료 광고는 창으로 덮지 않고 본문에 카드로 펼친다(「콘텐츠를 덮거나 가리는 영역에 광고 배치 금지」)
+   · 앱 안에서 막는 창이 떠 있으면 광고를 부르지 않는다
+   ※ 단위 ID 는 애드핏에서 크기별로 따로 발급받아 아래 units 에만 적으면 된다.
+     DAN-XXXX… 로 남아 있는 자리는 점선 자리표시자만 그리고 요청은 보내지 않는다.
+     같은 ID 를 한 화면에 함께 뜨는 두 자리에 쓰면 두 번 노출되어 정책 위반이다. */
+const AD = {
+  /* 애드핏 배너 크기는 160×600 · 250×250 · 300×250 · 320×100 · 320×50 · 728×90 뿐인데,
+     이 도구는 그중 휴대폰에서도 들어가는 320×50 · 320×100 · 300×250 만 쓴다 */
+  units: {
+    top:     { id: 'DAN-XXXXXXXXXXXXXXXX', w: 320, h: 50 },   /* 맨 위 · 모바일과 PC 크기가 같아 하나로 겸한다 */
+    side_pc: { id: 'DAN-XXXXXXXXXXXXXXXX', w: 320, h: 50 },   /* PC 옆 칸 맨 위(미리보기 위) */
+    mid:     { id: 'DAN-XXXXXXXXXXXXXXXX', w: 320, h: 100 },  /* PC 옆 칸 맨 아래 / 휴대폰 본문 — 한 곳에만 뜨니 하나로 쓴다 */
+    done:    { id: 'DAN-XXXXXXXXXXXXXXXX', w: 300, h: 250 },  /* 저장 완료 카드 */
+    anchor:  { id: 'DAN-XXXXXXXXXXXXXXXX', w: 320, h: 50 }    /* 모바일 하단 오버형 */
+  },
+  iframeOk: true,   /* iframe 안에서도 띄운다(다른 도구들과 같게). 끄려면 false */
+  popup: true,      /* 저장 완료 카드 */
+  overlay: true,    /* 하단 오버형 */
+  init() {
+    if (this.started) return;
+    this.started = true;
+    this.off = window.top !== window.self && !this.iframeOk;
+    this.pc = window.matchMedia('(min-width:980px)').matches;
+    if (this.off) { document.body.classList.add('no-ad'); return; }  /* 빈 자리가 남지 않게 접는다 */
+    this.put($('ad-top'), 'top');
+    if (this.pc) this.put($('ad-side'), 'side_pc');
+    /* 320×100 은 PC 면 옆 칸 맨 아래, 휴대폰이면 본문 — 한 곳에만 넣어 단위 하나로 겸한다 */
+    this.put(this.pc ? $('ad-mid-pc') : $('ad-mid'), 'mid');
+    /* 숨어 있는 자리(하단 오버형·저장 완료 카드)는 화면에 나온 다음에 부른다 —
+       안 보이는 동안 부르면 보는 사람 없이 노출만 잡히고, 애드핏도 「노출수를 인위적으로 늘리는 수단」을 금지한다 */
+    this.load();
+  },
+  /* 자리에 ins 를 만들어 둔다. 단위 ID 를 아직 안 넣었으면 점선 자리만 그리고 요청은 보내지 않는다.
+     높이는 min-height 로 — 내려온 광고가 적어 놓은 높이보다 길어도 잘리지 않게 */
+  put(box, key, preload) {
+    const u = this.units[key];
+    if (!box || !u || box.dataset.ad) return;
+    if (document.querySelectorAll('ins.kakao_ad_area').length >= 4) return;
+    box.dataset.ad = key;
+    box.style.width = u.w + 'px';
+    if (/XXXX/.test(u.id)) { box.style.height = u.h + 'px'; box.innerHTML = '<div class="ad-ph">광고 ' + u.w + ' × ' + u.h + '</div>'; return; }
+    box.style.minHeight = u.h + 'px';
+    /* 광고가 안 내려오면 빈 칸이 남는다 — 공식 콜백으로 접는다. 단위가 여럿이면 이름이 서로 달라야 한다 */
+    const fail = 'adNone_' + key;
+    window[fail] = () => {
+      box.classList.add('ad-none');
+      if (key === 'anchor') { this.closed = true; this.sync(); }
+      if (key === 'done') { const w = $('doneAd'); if (w) w.classList.add('ad-none'); }
+    };
+    const ins = document.createElement('ins');
+    ins.className = 'kakao_ad_area'; ins.style.display = 'none';
+    ins.setAttribute('data-ad-unit', u.id);
+    ins.setAttribute('data-ad-width', String(u.w));
+    ins.setAttribute('data-ad-height', String(u.h));
+    ins.setAttribute('data-ad-onfail', fail);
+    /* preload 를 켜면 애드핏이 「보이는 자리인가」 검사를 건너뛰고 0.7초마다 도는
+       preload 차례에 그려 넣는다 — 방금 펼친 자리를 바로 채우려고 쓴다 */
+    if (preload) ins.setAttribute('data-ad-preload', 'Y');
+    box.appendChild(ins);
+    this.need = true;
+  },
+  /* 숨어 있던 자리를 화면에 내놓은 뒤에 부른다. 기다리지 않게 render 도 한 번 찔러 준다 */
+  show(box, key) {
+    if (this.off || !this.started || !box || box.dataset.ad) return;
+    this.put(box, key, true);
+    this.load();
+    try {
+      const ins = box.querySelector('ins');
+      if (ins && window.adfit && typeof window.adfit.render === 'function') window.adfit.render(ins);
+    } catch (e) { /* 안 되면 0.7초 뒤 preload 차례가 채운다 */ }
+  },
+  load() {
+    if (!this.need || this.loaded) return;
+    this.loaded = true;
+    const s = document.createElement('script');
+    s.type = 'text/javascript'; s.async = true;
+    s.src = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
+    document.body.appendChild(s);
+  },
+  onScreen(el) {
+    if (!el || el.classList.contains('hide')) return false;
+    const r = el.getBoundingClientRect();
+    return r.height > 0 && r.bottom > 0 && r.top < window.innerHeight;
+  },
+  /* 하단 오버형 — 아래쪽 안내 글(이럴 때 씁니다·자주 묻는 것·주의)을 읽는 구간에서만 올라온다.
+     모양·난이도·그림·종이·미리보기·완료 카드 가운데 하나라도 화면에 보이면 내린다
+     (휴대폰에서는 main·aside 가 display:contents 라 카드마다 따로 본다) */
+  sync(barOn) {
+    if (this.off || this.pc || !this.overlay || !this.started) return;
+    const modal = document.body.classList.contains('ia-lock');
+    const ae = document.activeElement;
+    const typing = !!(ae && ae.closest && (ae.closest('#form') || ae.closest('#side')) &&
+      (/^(SELECT|TEXTAREA)$/.test(ae.tagName) || (ae.tagName === 'INPUT' && !/^(checkbox|radio|button|file|range|color)$/.test(ae.type))));
+    const working = ['shapeCard', 'lvCard', 'pairCard', 'paperCard', 'pvCard', 'doneCard'].some(id => this.onScreen($(id)));
+    const show = !this.closed && !barOn && !modal && !typing && !working && window.scrollY > 320;
+    const was = document.body.classList.contains('anch');
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    $('anchor').classList.toggle('on', show);
+    document.body.classList.toggle('anch', show);
+    /* 이미 맨 아래였으면 늘어난 여백만큼 다시 내려 마지막 줄이 바에 가리지 않게 */
+    if (show && !was && atBottom) window.scrollTo(0, document.documentElement.scrollHeight);
+    if (show) this.show($('ad-anchor'), 'anchor');
+  },
+  /* 저장이 끝나면 미리보기 밑(PC 는 옆 칸)에 결과 카드를 펼치고 그쪽을 보여 준다 — 창으로 덮지 않는다 */
+  done(msg, title) {
+    if (!this.popup) { toast(msg, 3200); return; }
+    $('doneMsg').textContent = msg;
+    if (title) $('doneTitle').textContent = title;
+    $('doneCard').classList.remove('hide');
+    if (!this.off) this.show($('ad-done'), 'done');
+    clearTimeout(this.goT);
+    this.goT = setTimeout(() => {
+      $('doneCard').scrollIntoView({ behavior: 'smooth', block: this.pc ? 'nearest' : 'center' });
+      updateMbar();
+    }, 250);
+  },
+  hideDone() { $('doneCard').classList.add('hide'); updateMbar(); }
+};
+
+/* ══ 설정 ══ */
+const OPT0 = {
+  shape: 'grid', pic: 'heart', text: '사랑해', inv: false, lv: 2, dens: 1, road: 'auto', ends: 'auto', wall: 'normal',
+  pair: 'rabbit', count: 1, per: 1, paper: 'auto', color: 'color', head: 'name', title: '', ans: 'end', view: 'q'
+};
+let opt = JSON.parse(JSON.stringify(OPT0));
+const SHAPE_KINDS = ['grid', 'theta', 'hex', 'pic', 'text', 'img'];
+function loadOpt() {
+  try {
+    const o = JSON.parse(localStorage.getItem(LS) || 'null');
+    if (o && typeof o === 'object') for (const k in OPT0) if (o[k] !== undefined && typeof o[k] === typeof OPT0[k]) opt[k] = o[k];
+  } catch (e) { /* 무시 */ }
+  if (!SHAPE_KINDS.includes(opt.shape) || opt.shape === 'img') opt.shape = opt.shape === 'img' ? 'pic' : 'grid';
+  if (!SHAPE[opt.pic]) opt.pic = 'heart';
+  if (![1, 2, 3, 4, 5, 6].includes(opt.lv)) opt.lv = 2;
+  opt.dens = clamp(Math.round((+opt.dens || 1) * 20) / 20, 0.5, 2);
+  if (![1, 4, 8, 12, 20].includes(opt.count)) opt.count = 1;
+  if (![1, 2, 4].includes(opt.per)) opt.per = 1;
+  if (!(opt.pair in PAIR) && opt.pair !== 'mix' && opt.pair !== 'none') opt.pair = 'rabbit';
+  opt.text = String(opt.text).slice(0, 12);
+  opt.view = 'q';
+}
+function saveOpt() { try { const o = Object.assign({}, opt); delete o.view; localStorage.setItem(LS, JSON.stringify(o)); } catch (e) { /* 무시 */ } }
+
+/* ══ 미로 목록 ══ 미로마다 씨앗 하나 — 설정을 바꿔도 같은 씨앗이면 「같은 자리에서 다시 판」 미로가 나온다 */
+let MAZES = [], qp = 0, mi = 0;
+const IMG = { img: null, id: 0, name: '' };
+function syncCount() {
+  while (MAZES.length < opt.count) MAZES.push({ seed: newSeed() });
+  if (MAZES.length > opt.count) MAZES.length = opt.count;
+}
+let DOC = null;
+function docNow() { DOC = planDoc(opt, MAZES); return DOC; }
+
+/* ══ 화면 ══ */
+const segFill = (id, items, cur2) => { $(id).innerHTML = items.map(it => '<button type="button" data-v="' + it[0] + '"' + (String(cur2) === String(it[0]) ? ' class="on"' : '') + '>' + it[1] + (it[2] ? '<i>' + it[2] + '</i>' : '') + '</button>').join(''); };
+function paintControls() {
+  document.querySelectorAll('#tgrid .tbtn').forEach(b => b.classList.toggle('on', b.dataset.t === opt.shape));
+  $('picBox').classList.toggle('hide', opt.shape !== 'pic');
+  $('textBox').classList.toggle('hide', opt.shape !== 'text');
+  $('imgBox').classList.toggle('hide', opt.shape !== 'img');
+  document.querySelectorAll('#pics .chip').forEach(b => b.classList.toggle('on', b.dataset.k === opt.pic));
+  if (document.activeElement !== $('textIn')) $('textIn').value = opt.text;
+  const SD = { grid: '네모 칸 미로 — 가장 흔한 모양입니다', theta: '동그라미 미로 — 바깥에서 가운데로 들어갑니다', hex: '벌집 미로 — 육각형 칸이라 길이 여섯 방향으로 납니다', pic: '그림 모양 안에 길을 냅니다', text: '글자 모양 안에 길을 냅니다 — 이름·짧은 말', img: '내 그림의 모양(실루엣) 안에 길을 냅니다' };
+  $('shapeDesc').textContent = SD[opt.shape];
+  segFill('segLv', LV.map((L, i) => [i + 1, L.n, L.age]), opt.lv);
+  segFill('segRoad', [['auto', '자동'], ['long', '구불구불', '긴 길'], ['mix', '섞기'], ['branch', '갈림길 많이', '짧은 막다른 길']], opt.road);
+  const ends = [['auto', '자동'], ['tb', '위 → 아래'], ['lr', '왼쪽 → 오른쪽'], ['far', '가장 먼 곳끼리']];
+  if (opt.shape === 'theta') ends.splice(1, 0, ['center', '바깥 → 가운데']);
+  segFill('segEnds', ends, opt.ends === 'center' && opt.shape !== 'theta' ? 'auto' : opt.ends);
+  segFill('segWall', [['thin', '가늘게'], ['normal', '보통'], ['thick', '굵게', '크레파스']], opt.wall);
+  $('densIn').value = Math.round(opt.dens * 100);
+  $('densOut').textContent = Math.round(opt.dens * 100) + '%';
+  document.querySelectorAll('#pairs .pbtn').forEach(b => b.classList.toggle('on', b.dataset.k === opt.pair));
+  segFill('segCount', [[1, '1개'], [4, '4개'], [8, '8개'], [12, '12개'], [20, '20개']], opt.count);
+  segFill('segPer', [[1, '1개', '크게'], [2, '2개'], [4, '4개', '작게']], opt.per);
+  segFill('segPaper', [['auto', '자동'], ['port', '세로'], ['land', '가로']], opt.paper);
+  segFill('segColor', [['color', '컬러'], ['line', '흑백 선', '색칠용']], opt.color);
+  segFill('segHead', [['none', '없음'], ['name', '이름·날짜'], ['title', '제목']], opt.head);
+  $('titleIn').classList.toggle('hide', opt.head !== 'title');
+  if (document.activeElement !== $('titleIn')) $('titleIn').value = opt.title;
+  segFill('segAns', [['end', '맨 뒤에'], ['each', '바로 다음 쪽'], ['none', '빼기']], opt.ans);
+  document.querySelectorAll('#viewGrp .tb').forEach(b => b.classList.toggle('on', b.dataset.v === opt.view));
+  const L = LV[opt.lv - 1];
+  $('lvHint').textContent = L.n + ' · ' + L.age;
+  $('pairHint').textContent = opt.pair === 'mix' ? '미로마다 다르게' : opt.pair === 'none' ? '출발·도착 글자' : PAIR[opt.pair].an + ' → ' + PAIR[opt.pair].bn;
+}
+
+/* 작은 미로 그림(모양 단추) */
+function miniMaze(cv, G, seed, mode) {
+  const x = cv.getContext('2d'), W = cv.width, H = cv.height, M = makeMaze(G, seed, 1, mode);
+  x.clearRect(0, 0, W, H);
+  const b = G.bounds, s = Math.min((W - 8) / (b.x1 - b.x0), (H - 8) / (b.y1 - b.y0));
+  x.save(); x.translate(W / 2 - (b.x0 + b.x1) / 2 * s, H / 2 - (b.y0 + b.y1) / 2 * s); x.scale(s, s);
+  x.lineCap = 'round'; x.lineJoin = 'round'; x.lineWidth = 1.7 / s; x.strokeStyle = getComputedStyle(document.body).getPropertyValue('--fg').trim() || '#222';
+  x.beginPath(); for (const ch of wallChains(M, false)) traceChain(x, G, ch); for (const ch of wallChains(M, true)) traceChain(x, G, ch); x.stroke();
+  x.restore();
+}
+
+let pvSeq = 0, pvT = 0;
+function schedule(delay) { clearTimeout(pvT); pvT = setTimeout(renderPv, delay == null ? 30 : delay); }
+function curSheet(doc) {
+  qp = clamp(qp, 0, doc.qCount - 1);
+  const idx = []; for (let i = qp * opt.per; i < Math.min(MAZES.length, (qp + 1) * opt.per); i++) idx.push(i);
+  return { kind: opt.view === 'a' ? 'a' : 'q', idx, qp };
+}
+function renderPv() {
+  const seq = ++pvSeq, cv = $('pv'), box = $('pvBox');
+  paintControls();
+  syncCount();
+  if (opt.shape === 'img' && !IMG.img) {
+    cv.classList.add('hide'); $('pvEmpty').classList.remove('hide');
+    $('pvEmpty').innerHTML = '<b>내 그림</b>을 넣으면<br>그 모양으로 미로가 여기 나타납니다';
+    $('dlPdf').disabled = $('dlPng').disabled = true; $('pvMeta').textContent = ''; $('playBar').classList.add('hide');
+    updateMbar();
+    return;
+  }
+  let doc;
+  try {
+    doc = docNow();
+    if (opt.view === 'play') renderPlay(doc);
+    else {
+      const sh = curSheet(doc);
+      const bw = Math.max(200, box.clientWidth - 18), k = bw / doc.W, dpr = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = Math.round(doc.W * k * dpr); cv.height = Math.round(doc.H * k * dpr);
+      cv.style.width = Math.round(doc.W * k) + 'px';
+      renderSheet(cv, opt, doc, sh, MAZES, k * dpr);
+    }
+  } catch (e) {
+    console.error(e);
+    if (seq === pvSeq) { $('pvMeta').textContent = (e && e.message) || String(e); $('dlPdf').disabled = $('dlPng').disabled = true; }
+    updateMbar();
+    return;
+  }
+  if (seq !== pvSeq) return;
+  $('pvEmpty').classList.add('hide'); cv.classList.remove('hide');
+  $('dlPdf').disabled = $('dlPng').disabled = false;
+  box.classList.toggle('play', opt.view === 'play');
+  $('playBar').classList.toggle('hide', opt.view !== 'play');
+  const play = opt.view === 'play';
+  $('pNo').textContent = play ? (mi + 1) + ' / ' + MAZES.length : (qp + 1) + ' / ' + doc.qCount;
+  $('pPrev').disabled = play ? mi <= 0 : qp <= 0;
+  $('pNext').disabled = play ? mi >= MAZES.length - 1 : qp >= doc.qCount - 1;
+  $('pnav').classList.toggle('hide', play ? MAZES.length < 2 : doc.qCount < 2);
+  /* 미리보기 아래 안내 — 칸 수·정답 길이·막다른 길 */
+  const j = play ? mi : qp * opt.per, Z = mazeAt(opt, MAZES[j], doc.slots[j % opt.per], doc.land), M = Z.M, G = M.G;
+  let size;
+  if (G.kind === 'grid') size = '가로 ' + G.C + '칸 × 세로 ' + G.R + '칸';
+  else if (G.kind === 'theta') size = '고리 ' + (G.rings.length - 1) + '겹 · ' + G.n + '칸';
+  else size = G.n + '칸';
+  const ansN = doc.sheets.filter(s => s.kind === 'a').length;
+  $('pvMeta').innerHTML = '<b>' + (j + 1) + '번 미로</b> · ' + size + ' · 정답 길 ' + M.path.length + '칸 · 막다른 길 ' + M.dead + '곳<br>PDF 전체 <b>' + doc.sheets.length + '쪽</b>' +
+    (ansN ? '(정답 ' + ansN + '쪽 포함)' : '') + ' · ' + (doc.land ? '가로' : '세로') + ' A4' + (opt.per > 1 ? ' · 한 장에 ' + opt.per + '개' : '');
+  $('pvState').textContent = play ? '풀기' : opt.view === 'a' ? '정답 쪽' : '문제 쪽';
+  $('densCalc').textContent = size;
+  if (play) playStatus();
+  updateMbar();
+}
+
+/* ══ 화면에서 풀기 ══ 출발 칸에서 손가락·마우스로 길을 긋는다. 벽은 못 지나가고, 되돌아가면 지워진다 */
+const PLAY = { key: '', cells: [], done: false, t0: 0, t1: 0, show: false, drag: false, lay: null };
+function playReset() { PLAY.cells = []; PLAY.done = false; PLAY.t0 = PLAY.t1 = 0; PLAY.show = false; PLAY.drag = false; }
+function renderPlay(doc) {
+  mi = clamp(mi, 0, MAZES.length - 1);
+  const slot = doc.slots[mi % opt.per], Z = mazeAt(opt, MAZES[mi], slot, doc.land), P = placeIn(Z, slot);
+  const key = layoutKey(opt, doc.land) + '|' + MAZES[mi].seed + '|' + mi;
+  if (PLAY.key !== key) { playReset(); PLAY.key = key; }
+  const box = $('pvBox'), cv = $('pv');
+  /* 미로와 출발·도착 그림만 보이게 자른다 */
+  const pad = 2, xs = [P.box.x, P.box.x + P.box.w], ys = [P.box.y, P.box.y + P.box.h];
+  for (const e of [Z.M.s, Z.M.g]) { const sp = iconSpot(Z, P, e); xs.push(sp.x - sp.size / 2, sp.x + sp.size / 2); ys.push(sp.y - sp.size / 2, sp.y + sp.size / 2); }
+  const R = { x: Math.min(...xs) - pad, y: Math.min(...ys) - pad }; R.w = Math.max(...xs) + pad - R.x; R.h = Math.max(...ys) + pad - R.y;
+  const bw = Math.max(200, box.clientWidth - 18), maxH = Math.max(260, window.innerHeight * (AD.pc ? 0.72 : 0.66));
+  const k = Math.min(bw / R.w, maxH / R.h), dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(R.w * k * dpr); cv.height = Math.round(R.h * k * dpr);
+  cv.style.width = Math.round(R.w * k) + 'px';
+  const x = cv.getContext('2d');
+  x.setTransform(k * dpr, 0, 0, k * dpr, -R.x * k * dpr, -R.y * k * dpr);
+  x.fillStyle = '#fff'; x.fillRect(R.x, R.y, R.w, R.h);
+  drawMaze(x, opt, Z, P, pairOfMaze(opt, MAZES[mi]), PLAY.show, { cells: PLAY.cells, done: PLAY.done });
+  x.setTransform(1, 0, 0, 1, 0, 0);
+  PLAY.lay = { k, R, P, Z };
+  $('showAns').classList.toggle('on', PLAY.show);
+  $('nextMaze').classList.toggle('hide', MAZES.length < 2);
+}
+const mmss = ms => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+function playStatus() {
+  const st = $('playSt');
+  if (PLAY.done) { st.innerHTML = '<span class="win">🎉 도착했어요!</span><small>걸린 시간 ' + mmss(PLAY.t1 - PLAY.t0) + ' · 지나온 칸 ' + PLAY.cells.length + '칸</small>'; return; }
+  if (!PLAY.cells.length) { st.innerHTML = '출발 칸에서 시작해 길을 그어 보세요<small>' + (AD.pc ? '마우스로 끌거나 방향키로 움직입니다' : '손가락으로 끌어서 그립니다') + ' · 벽은 못 지나가요</small>'; return; }
+  st.innerHTML = '가는 중 · ' + mmss(Date.now() - PLAY.t0) + '<small>되돌아가면 그은 길이 지워집니다</small>';
+}
+function cellAt(e) {
+  const L = PLAY.lay; if (!L) return { c: -1 };
+  const r = $('pv').getBoundingClientRect();
+  const mx = L.R.x + (e.clientX - r.left) / L.k, my = L.R.y + (e.clientY - r.top) / L.k;
+  const ux = (mx - L.P.ox) / L.P.s, uy = (my - L.P.oy) / L.P.s;
+  return { c: L.Z.M.G.locate(ux, uy), mx, my };
+}
+/* 몇 칸 건너뛰었으면(빨리 그었을 때) 벽 없는 짧은 길로 메운다 */
+function shortRoute(M, a, b, maxD) {
+  const prev = new Map([[a, -1]]), q = [a], G = M.G;
+  for (let h = 0, depth = 0; h < q.length && depth <= maxD * 8; h++, depth++) {
+    const c = q[h], A = G.adj[c];
+    for (let k = 0; k < A.length; k += 2) {
+      const to = A[k];
+      if (!M.open[A[k + 1]] || prev.has(to)) continue;
+      prev.set(to, c);
+      if (to === b) { const r = []; for (let x = b; x !== a; x = prev.get(x)) r.push(x); r.reverse(); return r.length <= maxD ? r : null; }
+      q.push(to);
+    }
+  }
+  return null;
+}
+function playMove(c) {
+  const M = PLAY.lay.Z.M, cells = PLAY.cells;
+  if (c < 0 || PLAY.done) return false;
+  const head = cells[cells.length - 1];
+  if (c === head) return false;
+  const at = cells.indexOf(c);
+  if (at >= 0) { cells.length = at + 1; return true; }
+  const r = shortRoute(M, head, c, 4);
+  if (!r) return false;
+  for (const x of r) { const j = cells.indexOf(x); if (j >= 0) cells.length = j + 1; else cells.push(x); }
+  if (cells[cells.length - 1] === M.g.c) { PLAY.done = true; PLAY.t1 = Date.now(); setTimeout(() => toast('🎉 도착! 걸린 시간 ' + mmss(PLAY.t1 - PLAY.t0), 3200), 30); }
+  return true;
+}
+function playDown(e) {
+  if (opt.view !== 'play' || locked() || !PLAY.lay) return;
+  const { c, mx, my } = cellAt(e), M = PLAY.lay.Z.M;
+  if (PLAY.done) { toast('다시 하려면 「처음부터」를 누르세요', 2200); return; }
+  let ok = false;
+  if (!PLAY.cells.length) {
+    const sp = iconSpot(PLAY.lay.Z, PLAY.lay.P, M.s), nearIcon = Math.hypot(mx - sp.x, my - sp.y) < sp.size * 0.7;
+    if (c === M.s.c || nearIcon) { PLAY.cells = [M.s.c]; PLAY.t0 = Date.now(); ok = true; }
+    else toast('출발 그림 옆 입구 칸에서 시작하세요', 2200);
+  } else if (PLAY.cells.includes(c)) { PLAY.cells.length = PLAY.cells.indexOf(c) + 1; ok = true; }
+  else ok = playMove(c);
+  if (ok || PLAY.cells.length) { PLAY.drag = true; try { $('pv').setPointerCapture(e.pointerId); } catch (er) { /* 무시 */ } e.preventDefault(); }
+  if (ok) { renderPv(); }
+}
+function playDrag(e) {
+  if (!PLAY.drag || opt.view !== 'play') return;
+  e.preventDefault();
+  const { c } = cellAt(e);
+  if (playMove(c)) renderPv();
+}
+function playKey(e) {
+  if (opt.view !== 'play' || locked() || !PLAY.lay || PLAY.done) return;
+  const ae = document.activeElement;
+  if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return;
+  const D = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[e.key];
+  if (!D) return;
+  const L = PLAY.lay; if (!AD.onScreen($('pvCard'))) return;
+  e.preventDefault();
+  const M = L.Z.M, G = M.G;
+  if (!PLAY.cells.length) { PLAY.cells = [M.s.c]; PLAY.t0 = Date.now(); renderPv(); return; }
+  const head = PLAY.cells[PLAY.cells.length - 1], A = G.adj[head];
+  let best = -1, bd = 0.45;
+  for (let k = 0; k < A.length; k += 2) {
+    if (!M.open[A[k + 1]]) continue;
+    const to = A[k], dx = G.cx[to] - G.cx[head], dy = G.cy[to] - G.cy[head], l = Math.hypot(dx, dy) || 1, dt = (dx * D[0] + dy * D[1]) / l;
+    if (dt > bd) { bd = dt; best = to; }
+  }
+  if (best >= 0 && playMove(best)) renderPv();
+}
+
+/* 휴대폰: 난이도·그림·종이 설정을 만지는 동안 미리보기가 화면 밖이면 아래 바를 띄운다 */
+function updateMbar() {
+  const pr = $('pvCard').getBoundingClientRect();
+  const inSet = AD.onScreen($('lvCard')) || AD.onScreen($('pairCard')) || AD.onScreen($('paperCard'));
+  const on = inSet && (pr.bottom < 60 || pr.top > window.innerHeight);
+  $('mbar').classList.toggle('on', on);
+  $('mbarGo').textContent = pr.bottom < 60 ? '미리보기 ↑' : '미리보기 ↓';
+  $('mbarTxt').textContent = LV[opt.lv - 1].n + ' · 미로 ' + opt.count + '개' + (DOC ? ' · ' + DOC.sheets.length + '쪽' : '');
+  AD.sync(on);
+}
+
+/* ══ 내 그림 넣기 ══ */
+async function fileToImg(f) {
+  const url = URL.createObjectURL(f);
+  try {
+    const img = new Image();
+    img.decoding = 'async';
+    await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('그림을 열지 못했습니다 (HEIC 는 JPG 로 바꿔 넣어 주세요)')); img.src = url; });
+    return img;
+  } finally { setTimeout(() => URL.revokeObjectURL(url), 1000); }
+}
+async function addFile(f) {
+  if (!f || !/^image\//.test(f.type)) { toast('그림 파일(PNG·JPG)을 넣어 주세요', 2600); return; }
+  try {
+    const img = await fileToImg(f);
+    IMG.img = img; IMG.id++; IMG.name = f.name || '붙여 넣은 그림';
+    opt.shape = 'img'; opt.inv = false; saveOpt();
+    $('imgName').textContent = IMG.name;
+    const c = $('imgThumb'), x = c.getContext('2d'), k = Math.min(c.width / img.naturalWidth, c.height / img.naturalHeight);
+    x.clearRect(0, 0, c.width, c.height);
+    x.drawImage(img, (c.width - img.naturalWidth * k) / 2, (c.height - img.naturalHeight * k) / 2, img.naturalWidth * k, img.naturalHeight * k);
+    $('imgRow').classList.remove('hide');
+    renderPv();
+  } catch (e) { toast((e && e.message) || '그림을 열지 못했습니다', 4200); }
+}
+
+/* ══ 저장 ══ */
+let busy = false;
+function docTitle() {
+  const d = new Date(), day = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  return '미로찾기_' + LV[opt.lv - 1].n.replace(/ /g, '') + '_' + day;
+}
+async function savePdf() {
+  if (busy || locked() || !MAZES.length) return;
+  busy = true;
+  const b = $('dlPdf'), old = b.innerHTML;
+  b.disabled = true;
+  const prog = t => { b.innerHTML = 'PDF 만드는 중<i>' + t + '</i>'; };
+  try {
+    const t0 = performance.now();
+    const doc = docNow(), name = docTitle() + '.pdf';
+    const r = await makePdf(opt, doc, MAZES, docTitle(), prog);
+    window.__mz_last = { blob: r.blob, name, pages: r.pages, ms: Math.round(performance.now() - t0) };
+    if (!download(r.blob, name)) return;
+    const ansN = doc.sheets.filter(s => s.kind === 'a').length;
+    toast('저장했습니다 · ' + name + ' · ' + fmtSize(r.blob.size), 3400);
+    AD.done('「' + name + '」로 저장했습니다(A4 ' + r.pages + '쪽' + (ansN ? ' · 정답 ' + ansN + '쪽 포함' : '') + ' · ' + fmtSize(r.blob.size) + ').', '미로 문제지 PDF를 저장했습니다');
+  } catch (e) {
+    console.error(e);
+    toast('만들지 못했습니다 · ' + ((e && e.message) || e), 5200);
+  } finally { busy = false; b.disabled = false; b.innerHTML = old; }
+}
+async function savePng() {
+  if (busy || locked() || !MAZES.length) return;
+  busy = true;
+  try {
+    const doc = docNow(), sh = curSheet(doc);
+    if (opt.view === 'play') sh.kind = 'q';
+    let blob = null, dpi = 0;
+    for (const d of [300, 200, 150]) {
+      const k = d / 25.4, cv = makeCanvas(doc.W * k, doc.H * k);
+      try { renderSheet(cv, opt, doc, sh, MAZES, k); blob = await new Promise(res => cv.toBlob(res, 'image/png')); } catch (e) { blob = null; }
+      freeCanvas(cv);
+      if (blob) { dpi = d; break; }
+    }
+    if (!blob) throw new Error('그림이 너무 큽니다');
+    const name = docTitle() + '_' + (qp + 1) + (sh.kind === 'a' ? '_정답' : '') + '.png';
+    window.__mz_png = { blob, name, dpi };
+    if (!download(blob, name)) return;
+    toast('저장했습니다 · ' + name + ' · ' + fmtSize(blob.size), 3400);
+    AD.done('「' + name + '」로 저장했습니다(' + dpi + 'dpi · ' + fmtSize(blob.size) + ').', sh.kind === 'a' ? '정답 그림을 저장했습니다' : '미로 그림을 저장했습니다');
+  } catch (e) {
+    console.error(e);
+    toast('만들지 못했습니다 · ' + ((e && e.message) || e), 5200);
+  } finally { busy = false; }
+}
+
+/* ══ 시작 ══ */
+function init() {
+  loadOpt();
+  /* 모양 단추 — 작은 미로를 실제로 그려서 붙인다 */
+  const TB = [['grid', '네모', '기본'], ['theta', '동그라미', '가운데로'], ['hex', '벌집', '육각형'], ['pic', '그림 모양', '하트·별·동물'], ['text', '글자 모양', '이름·짧은 말'], ['img', '내 그림 모양', '실루엣']];
+  $('tgrid').innerHTML = TB.map(t => '<button type="button" class="tbtn" data-t="' + t[0] + '"><canvas width="104" height="72"></canvas><b>' + t[1] + '</b><i>' + t[2] + '</i></button>').join('');
+  const mini = {
+    grid: () => buildGrid(6, 4), theta: () => buildTheta(3), hex: () => buildHex(2),
+    pic: () => { const A = shapeAlpha('heart', 1.2); return maskGraph(connectMask(gridFromAlpha(A.al, A.W, A.H, bboxW(A.al, A.W, A.H) / 9), 0.02)); },
+    text: () => { const A = textAlpha('가', 7); return maskGraph(connectMask(gridFromAlpha(A.al, A.W, A.H, A.cell), 0)); }
+  };
+  document.querySelectorAll('#tgrid .tbtn').forEach((b, i) => {
+    const cv = b.querySelector('canvas'), k = b.dataset.t;
+    try {
+      if (mini[k]) miniMaze(cv, mini[k](), 7 + i * 11, k === 'theta' ? 'center' : 'tb');
+      else { const x = cv.getContext('2d'); x.font = '34px ' + FONT; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('🖼️', 52, 38); }
+    } catch (e) { /* 그림 없이 */ }
+  });
+  /* 그림 모양 칩 */
+  $('pics').innerHTML = SHAPES.map(s => '<button type="button" class="chip" data-k="' + s.k + '"><canvas width="56" height="56"></canvas>' + s.n + '</button>').join('');
+  document.querySelectorAll('#pics .chip').forEach(b => {
+    const S = SHAPE[b.dataset.k], cv = b.querySelector('canvas'), x = cv.getContext('2d'), k = 48 / Math.max(S.w, S.h);
+    x.translate((56 - S.w * k) / 2, (56 - S.h * k) / 2); x.scale(k, k); x.fillStyle = '#8b5cf6'; S.d(x);
+  });
+  /* 출발·도착 그림 */
+  $('pairs').innerHTML = PAIRS.map(p => '<button type="button" class="pbtn" data-k="' + p.k + '"><canvas width="112" height="52"></canvas><b>' + p.an + ' → ' + p.bn + '</b></button>').join('') +
+    '<button type="button" class="pbtn" data-k="mix"><span class="pk">🎲</span><b>섞어서</b><i>미로마다 다르게</i></button>' +
+    '<button type="button" class="pbtn" data-k="none"><span class="pk txt">출발 → 도착</span><b>글자만</b><i>그림 없이</i></button>';
+  document.querySelectorAll('#pairs .pbtn').forEach(b => {
+    const p = PAIR[b.dataset.k], cv = b.querySelector('canvas'); if (!p || !cv) return;
+    const x = cv.getContext('2d');
+    drawIcon(x, p.a, 27, 26, 46, true); drawIcon(x, p.b, 85, 26, 42, true);
+    x.strokeStyle = '#9ca3af'; x.lineWidth = 2; x.lineCap = 'round'; x.beginPath(); x.moveTo(50, 26); x.lineTo(62, 26); x.moveTo(58, 22); x.lineTo(62, 26); x.lineTo(58, 30); x.stroke();
+  });
+
+  /* 1. 모양 */
+  $('tgrid').addEventListener('click', e => {
+    const b = e.target.closest('.tbtn'); if (!b || locked()) return;
+    if (b.dataset.t === 'img' && !IMG.img) { $('imgBox').classList.remove('hide'); opt.shape = 'img'; paintControls(); $('fileIn').click(); return; }
+    opt.shape = b.dataset.t; if (opt.ends === 'center' && opt.shape !== 'theta') opt.ends = 'auto';
+    saveOpt(); renderPv();
+  });
+  $('pics').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; opt.pic = b.dataset.k; saveOpt(); renderPv(); });
+  $('textIn').addEventListener('input', e => {
+    const v = [...e.target.value].slice(0, 12).join('');
+    if (v !== e.target.value) e.target.value = v;
+    opt.text = v; saveOpt(); schedule(260);
+  });
+  $('textChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; opt.text = b.dataset.v; $('textIn').value = opt.text; saveOpt(); renderPv(); });
+  $('fileIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) addFile(f); else if (!IMG.img) { opt.shape = 'pic'; renderPv(); } });
+  const drop = $('drop');
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove('over')));
+  window.addEventListener('dragover', e => e.preventDefault());
+  window.addEventListener('drop', e => { e.preventDefault(); if (locked()) return; const fs = e.dataTransfer && e.dataTransfer.files; if (fs && fs.length) addFile(fs[0]); });
+  window.addEventListener('paste', e => {
+    if (locked()) return;
+    const ae = document.activeElement; if (ae && (ae.id === 'titleIn' || ae.id === 'textIn')) return;
+    const items = e.clipboardData && e.clipboardData.items; if (!items) return;
+    for (const it of items) if (it.kind === 'file' && /^image\//.test(it.type)) { e.preventDefault(); addFile(it.getAsFile()); return; }
+  });
+  $('invBtn').addEventListener('click', () => { opt.inv = !opt.inv; renderPv(); });
+  /* 2. 난이도 */
+  const segOn = (id, key, num, after) => $(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    opt[key] = num ? +b.dataset.v : b.dataset.v;
+    if (after) after();
+    saveOpt(); renderPv();
+  });
+  segOn('segLv', 'lv', true);
+  segOn('segRoad', 'road'); segOn('segEnds', 'ends'); segOn('segWall', 'wall');
+  $('densIn').addEventListener('input', e => { opt.dens = clamp(+e.target.value / 100, 0.5, 2); $('densOut').textContent = Math.round(opt.dens * 100) + '%'; saveOpt(); schedule(120); });
+  /* 3. 그림 */
+  $('pairs').addEventListener('click', e => { const b = e.target.closest('.pbtn'); if (!b) return; opt.pair = b.dataset.k; saveOpt(); renderPv(); });
+  /* 4. 종이 */
+  segOn('segCount', 'count', true, () => { syncCount(); });
+  segOn('segPer', 'per', true, () => { qp = 0; });
+  segOn('segPaper', 'paper'); segOn('segColor', 'color'); segOn('segHead', 'head'); segOn('segAns', 'ans');
+  $('titleIn').addEventListener('input', e => { opt.title = e.target.value.slice(0, 40); saveOpt(); schedule(150); });
+  /* 미리보기 · 저장 */
+  $('viewGrp').addEventListener('click', e => {
+    const b = e.target.closest('.tb'); if (!b) return;
+    if (b.dataset.v === 'play' && opt.view !== 'play') { mi = clamp(qp * opt.per, 0, MAZES.length - 1); playReset(); PLAY.key = ''; }
+    if (b.dataset.v !== 'play' && opt.view === 'play') qp = Math.floor(mi / opt.per);
+    opt.view = b.dataset.v; renderPv();
+  });
+  $('pPrev').addEventListener('click', () => { if (opt.view === 'play') mi--; else qp--; renderPv(); });
+  $('pNext').addEventListener('click', () => { if (opt.view === 'play') mi++; else qp++; renderPv(); });
+  $('reGen').addEventListener('click', () => {
+    if (opt.view === 'play') MAZES[mi].seed = newSeed();
+    else for (let i = qp * opt.per; i < Math.min(MAZES.length, (qp + 1) * opt.per); i++) MAZES[i].seed = newSeed();
+    renderPv();
+  });
+  $('reGenAll').addEventListener('click', () => { MAZES.forEach(m => { m.seed = newSeed(); }); renderPv(); toast('미로 ' + MAZES.length + '개를 모두 새로 만들었습니다', 2200); });
+  const pv = $('pv');
+  pv.addEventListener('pointerdown', playDown);
+  pv.addEventListener('pointermove', playDrag);
+  const up = () => { PLAY.drag = false; };
+  pv.addEventListener('pointerup', up); pv.addEventListener('pointercancel', up);
+  document.addEventListener('keydown', playKey);
+  $('showAns').addEventListener('click', () => { PLAY.show = !PLAY.show; renderPv(); });
+  $('playReset').addEventListener('click', () => { playReset(); renderPv(); });
+  $('nextMaze').addEventListener('click', () => { mi = (mi + 1) % MAZES.length; renderPv(); });
+  setInterval(() => { if (opt.view === 'play' && PLAY.cells.length && !PLAY.done && !document.hidden) playStatus(); }, 1000);
+  $('dlPdf').addEventListener('click', savePdf);
+  $('dlPng').addEventListener('click', savePng);
+  $('doneHide').addEventListener('click', () => AD.hideDone());
+  $('anchorX').addEventListener('click', () => { AD.closed = true; AD.sync(); });
+  $('mbarGo').addEventListener('click', () => $('pvCard').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  const goOut = () => { const u = externalUrl(); if (u) { location.href = u; return; } copyAddr(true); iaCopied(); };
+  $('iaGo').addEventListener('click', goOut);
+  $('iaGo2').addEventListener('click', goOut);
+  $('doneGo').addEventListener('click', goOut);
+  $('iaStay').addEventListener('click', () => {
+    lockInApp(false);
+    AD.init();
+    updateMbar();
+    toast('저장은 안 됩니다. 저장하려면 위쪽 「' + $('iaGo').textContent + '」를 눌러 주세요.', 5200);
+  });
+  $('iaX').addEventListener('click', () => {
+    document.body.classList.remove('inapp');
+    try { sessionStorage.setItem('maze_maker.iahide', '1'); } catch (e) { /* 무시 */ }
+  });
+  document.addEventListener('focusin', updateMbar);
+  document.addEventListener('focusout', () => setTimeout(updateMbar, 0));
+  let sT = 0;
+  window.addEventListener('scroll', () => { if (!sT) sT = requestAnimationFrame(() => { sT = 0; updateMbar(); }); }, { passive: true });
+  let lastW = window.innerWidth;
+  window.addEventListener('resize', () => { if (Math.abs(window.innerWidth - lastW) < 2) return; lastW = window.innerWidth; schedule(160); });
+  syncCount();
+  initInApp();
+  if (!locked()) AD.init();
+  renderPv();
+}
+init();
+</script>
+</body>
+</html>
